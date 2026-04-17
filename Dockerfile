@@ -1,4 +1,4 @@
-FROM hugo
+FROM hugomods/hugo
 COPY src/ /tmp/
 RUN hugo -v --cleanDestinationDir
 
