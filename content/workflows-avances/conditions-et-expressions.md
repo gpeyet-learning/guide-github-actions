@@ -208,7 +208,7 @@ jobs:
       - run: pytest
 ```
 
-> **Exercice** : Ajoutez au workflow `ci.yml` de `demo-api` un job `notify` qui :
+> **Exercice** : Ajoutez au workflow `ci.yml` de `mon-app` un job `notify` qui :
 > 1. S'exécute **toujours** (`always()`), que les tests aient réussi ou échoué.
 > 2. Affiche "Tests réussis !" si les tests ont passé, ou "Tests échoués !" si ils ont échoué.
 > 3. Ne s'exécute que sur des pushs vers `main` (pas sur les PRs).

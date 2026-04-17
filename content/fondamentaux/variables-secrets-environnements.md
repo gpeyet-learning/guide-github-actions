@@ -59,13 +59,13 @@ Il existe trois façons de définir une variable, selon sa portée :
 ```yaml
 env:
   PYTHON_VERSION: "3.12"
-  APP_NAME: "demo-api"
+  APP_NAME: "mon-app"
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "$APP_NAME"          # demo-api
+      - run: echo "$APP_NAME"          # mon-app
 ```
 
 ### 2. Variables locales au job
@@ -249,7 +249,7 @@ Priorité : **Environnement > Dépôt > Organisation**
 - **Jamais dans le code** : vérifiez votre historique git avant d'ajouter un secret — un secret committé dans git doit être considéré comme compromis, même si supprimé ensuite.
 - **Variables vs secrets** : utilisez `vars` pour les valeurs non sensibles (noms d'hôtes, régions) et `secrets` pour les valeurs confidentielles (tokens, mots de passe).
 
-> **Exercice** : Dans le dépôt `demo-api`, créez un secret `API_KEY` avec la valeur `my-super-secret-key`. Ajoutez un environnement `staging`. Dans le workflow `ci.yml`, ajoutez un job `check-secrets` qui référence l'environnement `staging` et affiche un message en utilisant la variable d'environnement `API_KEY` (sans afficher sa valeur).
+> **Exercice** : Dans le dépôt `mon-app`, créez un secret `API_KEY` avec la valeur `my-super-secret-key`. Ajoutez un environnement `staging`. Dans le workflow `ci.yml`, ajoutez un job `check-secrets` qui référence l'environnement `staging` et affiche un message en utilisant la variable d'environnement `API_KEY` (sans afficher sa valeur).
 
 <details>
 <summary>Solution</summary>

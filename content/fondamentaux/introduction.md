@@ -77,45 +77,43 @@ Les étapes d'un job partagent le même filesystem et les mêmes variables d'env
 
 Un runner est la **machine virtuelle** (ou le conteneur) qui exécute les jobs. GitHub propose des runners hébergés pour Linux, Windows et macOS. Il est aussi possible d'utiliser ses propres machines (self-hosted runners) — nous y consacrerons toute une partie de ce guide.
 
-## Le projet fil rouge : `demo-api`
+## Le projet fil rouge : `mon-app`
 
-Tout au long de ce guide, nous allons construire les pipelines CI/CD d'une application concrète : **`demo-api`**, une API REST minimaliste en Python (FastAPI) avec quelques endpoints et une suite de tests.
+Tout au long de ce guide, nous allons construire les pipelines CI/CD d'une application concrète : **`mon-app`**, un service HTTP containerisé avec une suite de tests.
 
-Le projet est simple volontairement — l'objectif n'est pas d'apprendre FastAPI, mais de se concentrer sur GitHub Actions. À la fin du guide, `demo-api` disposera :
+Le projet est simple volontairement — l'objectif n'est pas d'apprendre un framework applicatif, mais de se concentrer sur GitHub Actions. À la fin du guide, `mon-app` disposera :
 
 - d'une CI complète (lint, tests, couverture de code)
 - d'une chaîne de build et publication d'image Docker
 - d'un déploiement automatique sur un cluster Kubernetes
 - de runners auto-hébergés pour les tâches sensibles
 
-Voici la structure du projet que nous utiliserons :
+### Structure du projet
 
 ```
-demo-api/
+mon-app/
 ├── .github/
 │   └── workflows/         ← nos fichiers de workflow
-├── app/
-│   ├── main.py            ← application FastAPI
-│   └── routers/
-│       └── items.py
-├── tests/
-│   ├── test_main.py
-│   └── test_items.py
+├── src/                   ← code source de l'application
+├── tests/                 ← tests unitaires et d'intégration
 ├── Dockerfile
-├── requirements.txt
-└── requirements-dev.txt
+└── .dockerignore
 ```
 
-> **Note** : dans ce guide, les exercices sur le projet fil rouge s'appuient sur un dépôt GitHub réel. Vous pouvez créer ce dépôt dès maintenant pour suivre les exercices.
+Le langage et le framework applicatif n'ont pas d'importance pour la grande majorité des concepts abordés. **Docker est le contrat entre votre code et GitHub Actions** : à partir du moment où votre application se build en image Docker, le pipeline CI/CD est quasiment identique quelle que soit la stack.
 
-> **Exercice** : Créez un dépôt public `demo-api` sur votre compte GitHub. Initialisez-le avec un `README.md`. Naviguez ensuite dans l'onglet **Actions** de ce dépôt et observez l'interface vide qui vous accueille.
+La seule phase où le langage compte réellement est le lint et les tests unitaires (chapitre [Intégration continue](/cicd-pratique/integration-continue/)). Ce chapitre présente des exemples pour les stacks les plus courantes : Python, Node.js, Angular, Java et PHP.
+
+> **Note** : remplacez `mon-app` par le nom de votre propre projet — les workflows Docker présentés dans ce guide s'appliquent sans modification.
+
+> **Exercice** : Créez un dépôt public `mon-app` sur votre compte GitHub. Initialisez-le avec un `README.md`. Naviguez ensuite dans l'onglet **Actions** de ce dépôt et observez l'interface vide qui vous accueille.
 
 <details>
 <summary>Solution</summary>
 
 ```bash
 # Avec GitHub CLI (recommandé)
-gh repo create demo-api --public --description "API de démonstration — fil rouge du guide GitHub Actions"
+gh repo create mon-app --public --description "Application de démonstration — fil rouge du guide GitHub Actions"
 
 # Ou via l'interface web : github.com/new
 ```

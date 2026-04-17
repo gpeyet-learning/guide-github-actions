@@ -129,8 +129,8 @@ on:
 
 ```yaml
 env:
-  PYTHON_VERSION: "3.12"
-  APP_NAME: demo-api
+  APP_VERSION: "1.0.0"
+  APP_NAME: mon-app
 ```
 
 Ces variables sont disponibles dans **tous les jobs et toutes les steps** du workflow. On peut aussi définir des variables au niveau d'un job ou d'une step — les niveaux plus précis écrasent les niveaux supérieurs.
@@ -235,61 +235,18 @@ Les runners GitHub viennent avec un environnement riche. Sur `ubuntu-latest` on 
 
 La liste complète est disponible dans le [dépôt `actions/runner-images`](https://github.com/actions/runner-images).
 
-## Premier workflow concret : `demo-api`
+## Premier workflow concret : `mon-app`
 
-Mettons en pratique. Voici le projet `demo-api` minimal pour commencer :
+Mettons en pratique. Voici le workflow CI minimal pour `mon-app` — il vérifie que le projet se build correctement à chaque push. C'est la base sur laquelle nous construirons les pipelines lint+test dans les chapitres suivants.
 
-```python
-# app/main.py
-from fastapi import FastAPI
+Le principe : **si le `docker build` réussit, l'image est valide**. C'est un premier filet de sécurité universel, indépendant du langage.
 
-app = FastAPI()
-
-@app.get("/")
-def root():
-    return {"message": "Hello, World!"}
-
-@app.get("/health")
-def health():
-    return {"status": "ok"}
-```
-
-```python
-# tests/test_main.py
-from fastapi.testclient import TestClient
-from app.main import app
-
-client = TestClient(app)
-
-def test_root():
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.json() == {"message": "Hello, World!"}
-
-def test_health():
-    response = client.get("/health")
-    assert response.status_code == 200
-```
-
-```
-# requirements.txt
-fastapi==0.115.6
-uvicorn==0.34.0
-
-# requirements-dev.txt
-pytest==8.3.4
-httpx==0.28.1
-pytest-cov==6.0.0
-ruff==0.9.0
-```
-
-> **Exercice** : Créez le fichier `.github/workflows/ci.yml` dans le dépôt `demo-api`. Ce workflow doit :
+> **Exercice** : Créez le fichier `.github/workflows/ci.yml` dans le dépôt `mon-app`. Ce workflow doit :
 > 1. Se déclencher sur tout push vers `main` et sur toute pull request vers `main`.
-> 2. Exécuter un seul job `test` sur `ubuntu-latest`.
+> 2. Exécuter un seul job `build` sur `ubuntu-latest`.
 > 3. Récupérer le code avec `actions/checkout@v4`.
-> 4. Installer Python 3.12 (indice : action `actions/setup-python@v5`).
-> 5. Installer les dépendances depuis `requirements.txt` et `requirements-dev.txt`.
-> 6. Lancer `pytest`.
+> 4. Configurer Docker Buildx (indice : action `docker/setup-buildx-action@v3`).
+> 5. Construire l'image Docker sans la pousser.
 
 <details>
 <summary>Solution</summary>
@@ -305,32 +262,30 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Cloner le code
         uses: actions/checkout@v4
 
-      - name: Installer Python 3.12
-        uses: actions/setup-python@v5
+      - name: Configurer Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Vérifier que l'image se build
+        uses: docker/build-push-action@v6
         with:
-          python-version: "3.12"
-
-      - name: Installer les dépendances
-        run: |
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
-
-      - name: Lancer les tests
-        run: pytest
+          context: .
+          push: false          # Build local uniquement — pas de push sur un registry
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 ```
 
 Points importants :
 
 - `actions/checkout@v4` est indispensable — sans lui, le runner démarre avec un répertoire de travail vide.
-- `actions/setup-python@v5` avec `with: python-version: "3.12"` installe la version exacte souhaitée.
-- Le `pip install` combine les deux fichiers de requirements en une seule step pour garder les logs groupés.
-- `pytest` sans argument découvre automatiquement les tests dans le dossier `tests/`.
+- `docker/setup-buildx-action@v3` active BuildKit, qui apporte le cache de build et le support multi-arch.
+- `push: false` build l'image localement sans la publier — parfait pour valider que le `Dockerfile` est correct.
+- `cache-from/cache-to: type=gha` met en cache les layers Docker entre les runs pour accélérer les builds suivants.
 
 </details>
 

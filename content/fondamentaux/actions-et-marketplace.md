@@ -250,7 +250,7 @@ Avant d'utiliser une action du marketplace, vérifiez :
 3. **La date du dernier commit** : une action non maintenue peut devenir un risque.
 4. **Le code source** : lisez le `action.yml` et le code — une action qui exécute `curl | bash` vers un serveur inconnu est un red flag.
 
-> **Exercice** : Dans le workflow `ci.yml` de `demo-api`, ajoutez une step qui utilise `actions/setup-python@v5` avec l'option `cache: "pip"`. Comparez le temps d'exécution entre le premier run (cache manquant) et le deuxième run (cache présent).
+> **Exercice** : Dans le workflow `ci.yml` de `mon-app`, ajoutez une step qui utilise `actions/setup-python@v5` avec l'option `cache: "pip"`. Comparez le temps d'exécution entre le premier run (cache manquant) et le deuxième run (cache présent).
 
 <details>
 <summary>Solution</summary>

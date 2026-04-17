@@ -212,10 +212,10 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           # kubectl utilise automatiquement le token du ServiceAccount
-          kubectl set image deployment/demo-api \
-            demo-api=ghcr.io/mon-org/demo-api:${{ github.sha }} \
+          kubectl set image deployment/mon-app \
+            mon-app=ghcr.io/mon-org/mon-app:${{ github.sha }} \
             -n apps
-          kubectl rollout status deployment/demo-api -n apps
+          kubectl rollout status deployment/mon-app -n apps
 ```
 
 ### Approche 2 : kubeconfig dans les secrets GitHub
@@ -328,7 +328,7 @@ helm upgrade arc-runner-set \
   oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
 ```
 
-> **Exercice** : Créez un second RunnerScaleSet nommé `k8s-runners-docker` avec la configuration DinD. Modifiez le workflow `docker.yml` de `demo-api` pour l'utiliser à la place de `ubuntu-latest` pour le build Docker.
+> **Exercice** : Créez un second RunnerScaleSet nommé `k8s-runners-docker` avec la configuration DinD. Modifiez le workflow `docker.yml` de `mon-app` pour l'utiliser à la place de `ubuntu-latest` pour le build Docker.
 
 <details>
 <summary>Solution</summary>

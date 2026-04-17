@@ -5,7 +5,7 @@ weight: 170
 
 ## L'architecture finale
 
-Ce chapitre assemble tout ce que nous avons appris pour construire le pipeline de production de `demo-api`. Ce pipeline tourne **entièrement sur votre cluster Kubernetes privé** et déploie sur ce même cluster.
+Ce chapitre assemble tout ce que nous avons appris pour construire le pipeline de production de `mon-app`. Ce pipeline tourne **entièrement sur votre cluster Kubernetes privé** et déploie sur ce même cluster.
 
 ```mermaid
 graph TD
@@ -21,8 +21,8 @@ graph TD
             R2[k8s-runners-docker Pods DinD]
         end
         subgraph "namespace: apps"
-            STAGING[demo-api staging]
-            PROD[demo-api production]
+            STAGING[mon-app staging]
+            PROD[mon-app production]
         end
         subgraph "namespace: registry"
             REG[Registry Docker privé<br/>ghcr.io ou Harbor]
@@ -38,7 +38,7 @@ graph TD
 
 ## Structure finale des workflows
 
-Le projet `demo-api` dispose de trois workflows :
+Le projet `mon-app` dispose de trois workflows :
 
 | Fichier                    | Déclencheur            | Runner              | Rôle                              |
 |---------------------------|------------------------|---------------------|-----------------------------------|
@@ -240,12 +240,12 @@ jobs:
         env:
           IMAGE: ghcr.io/${{ github.repository }}@${{ needs.build-push.outputs.image-digest }}
         run: |
-          kubectl set image deployment/demo-api demo-api="$IMAGE" -n staging
-          kubectl rollout status deployment/demo-api -n staging --timeout=5m
+          kubectl set image deployment/mon-app mon-app="$IMAGE" -n staging
+          kubectl rollout status deployment/mon-app -n staging --timeout=5m
 
       - name: Smoke test
         run: |
-          SERVICE_IP=$(kubectl get svc demo-api -n staging -o jsonpath='{.spec.clusterIP}')
+          SERVICE_IP=$(kubectl get svc mon-app -n staging -o jsonpath='{.spec.clusterIP}')
           kubectl run smoke-test --image=curlimages/curl:latest \
             --restart=Never \
             --rm \
@@ -267,11 +267,11 @@ jobs:
           IMAGE: ghcr.io/${{ github.repository }}@${{ needs.build-push.outputs.image-digest }}
           VERSION: ${{ needs.build-push.outputs.image-tag }}
         run: |
-          kubectl set image deployment/demo-api demo-api="$IMAGE" -n production
-          kubectl annotate deployment/demo-api \
+          kubectl set image deployment/mon-app mon-app="$IMAGE" -n production
+          kubectl annotate deployment/mon-app \
             "kubernetes.io/change-cause=Release $VERSION via GitHub Actions run ${{ github.run_id }}" \
             -n production
-          kubectl rollout status deployment/demo-api -n production --timeout=10m
+          kubectl rollout status deployment/mon-app -n production --timeout=10m
 
   create-release:
     name: "Créer la release GitHub"
@@ -307,7 +307,7 @@ jobs:
             ```
 ```
 
-## Les manifestes Kubernetes pour `demo-api`
+## Les manifestes Kubernetes pour `mon-app`
 
 ```yaml
 # k8s/namespace.yaml
@@ -327,22 +327,22 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demo-api
+  name: mon-app
   namespace: staging
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: demo-api
+      app: mon-app
   template:
     metadata:
       labels:
-        app: demo-api
+        app: mon-app
         version: latest
     spec:
       containers:
-        - name: demo-api
-          image: ghcr.io/mon-org/demo-api:main
+        - name: mon-app
+          image: ghcr.io/mon-org/mon-app:main
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
@@ -387,17 +387,17 @@ kubectl create secret docker-registry ghcr-pull-secret \
 ```
 
 Pour rendre les images GHCR publiques (plus simple pour usage personnel) :
-Sur GitHub → dépôt → Packages → demo-api → Package settings → Change visibility → Public.
+Sur GitHub → dépôt → Packages → mon-app → Package settings → Change visibility → Public.
 
 ## Rollback automatique en cas d'échec
 
 ```yaml
       - name: Déployer avec rollback automatique
         run: |
-          if ! kubectl rollout status deployment/demo-api -n staging --timeout=5m; then
+          if ! kubectl rollout status deployment/mon-app -n staging --timeout=5m; then
             echo "Le déploiement a échoué, rollback en cours..."
-            kubectl rollout undo deployment/demo-api -n staging
-            kubectl rollout status deployment/demo-api -n staging
+            kubectl rollout undo deployment/mon-app -n staging
+            kubectl rollout status deployment/mon-app -n staging
             echo "Rollback effectué"
             exit 1
           fi
@@ -424,10 +424,10 @@ graph TD
             R2[k8s-runners-docker]
         end
         subgraph "staging"
-            API_S[demo-api]
+            API_S[mon-app]
         end
         subgraph "production"
-            API_P[demo-api]
+            API_P[mon-app]
         end
     end
 

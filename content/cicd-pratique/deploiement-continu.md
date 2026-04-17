@@ -5,7 +5,7 @@ weight: 110
 
 ## Architecture du pipeline de déploiement
 
-Le déploiement continu de `demo-api` suit ce flux :
+Le déploiement continu de `mon-app` suit ce flux :
 
 ```mermaid
 graph LR
@@ -21,10 +21,10 @@ graph LR
 
 ## Construire et publier une image Docker
 
-### Le Dockerfile de `demo-api`
+### Le Dockerfile de `mon-app`
 
 ```dockerfile
-# Dockerfile
+# Dockerfile — exemple Python, adaptez à votre stack
 FROM python:3.12-slim
 
 WORKDIR /app
@@ -32,10 +32,10 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app/ ./app/
+COPY src/ ./src/
 
 EXPOSE 8000
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
 ### Publier sur GitHub Container Registry (GHCR)
@@ -111,28 +111,28 @@ La règle `type=semver,pattern={{major}}.{{minor}}` crée un tag flottant `1.2` 
 
 ## Déployer sur Kubernetes
 
-### Le manifeste Kubernetes de `demo-api`
+### Le manifeste Kubernetes de `mon-app`
 
 ```yaml
 # k8s/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demo-api
+  name: mon-app
   namespace: apps
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: demo-api
+      app: mon-app
   template:
     metadata:
       labels:
-        app: demo-api
+        app: mon-app
     spec:
       containers:
-        - name: demo-api
-          image: ghcr.io/mon-org/demo-api:latest   # Remplacé dynamiquement
+        - name: mon-app
+          image: ghcr.io/mon-org/mon-app:latest   # Remplacé dynamiquement
           ports:
             - containerPort: 8000
           livenessProbe:
@@ -148,11 +148,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: demo-api
+  name: mon-app
   namespace: apps
 spec:
   selector:
-    app: demo-api
+    app: mon-app
   ports:
     - port: 80
       targetPort: 8000
@@ -171,9 +171,9 @@ Deux approches principales :
           kubeconfig: ${{ secrets.KUBECONFIG }}
 
       - run: |
-          kubectl set image deployment/demo-api \
-            demo-api=ghcr.io/${{ github.repository }}:sha-${{ github.sha }}
-          kubectl rollout status deployment/demo-api -n apps
+          kubectl set image deployment/mon-app \
+            mon-app=ghcr.io/${{ github.repository }}:sha-${{ github.sha }}
+          kubectl rollout status deployment/mon-app -n apps
 ```
 
 **2. GitOps avec ArgoCD / Flux** (recommandé pour les clusters privés) :
@@ -186,13 +186,13 @@ Le workflow met à jour un dépôt de configuration Git. ArgoCD ou Flux détecte
           TAG: sha-${{ github.sha }}
         run: |
           # Modifier le tag de l'image dans le manifeste
-          sed -i "s|image: ghcr.io/mon-org/demo-api:.*|image: ghcr.io/mon-org/demo-api:$TAG|" \
+          sed -i "s|image: ghcr.io/mon-org/mon-app:.*|image: ghcr.io/mon-org/mon-app:$TAG|" \
             k8s/deployment.yaml
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add k8s/deployment.yaml
-          git commit -m "chore: update demo-api to $TAG"
+          git commit -m "chore: update mon-app to $TAG"
           git push
 ```
 
@@ -294,7 +294,7 @@ jobs:
       - run: |
           echo "Déploiement de l'image tag: ${{ needs.build-push.outputs.image-tag }}"
           echo "Vers l'environnement staging"
-          # kubectl set image deployment/demo-api ...
+          # kubectl set image deployment/mon-app ...
 
   deploy-production:
     needs: [build-push, deploy-staging]
@@ -330,7 +330,7 @@ Quand un tag semver est poussé, créer automatiquement une release GitHub :
           make_latest: true
 ```
 
-> **Exercice** : Ajoutez le Dockerfile à `demo-api` et créez le workflow `docker.yml`. Poussez sur `main` et vérifiez que l'image apparaît dans l'onglet **Packages** du dépôt sur GitHub. Créez ensuite un tag `v0.1.0` et vérifiez qu'une release est créée avec l'image taguée `0.1.0`.
+> **Exercice** : Ajoutez le Dockerfile à `mon-app` et créez le workflow `docker.yml`. Poussez sur `main` et vérifiez que l'image apparaît dans l'onglet **Packages** du dépôt sur GitHub. Créez ensuite un tag `v0.1.0` et vérifiez qu'une release est créée avec l'image taguée `0.1.0`.
 
 <details>
 <summary>Solution</summary>
@@ -345,18 +345,18 @@ git commit -m "feat: add Docker build and publish workflow"
 git push origin main
 
 # Attendre que le workflow s'exécute (~2-3 minutes)
-# Vérifier l'image dans : github.com/<your-login>/demo-api/pkgs/container/demo-api
+# Vérifier l'image dans : github.com/<your-login>/mon-app/pkgs/container/mon-app
 
 # Créer et pousser un tag de release
 git tag v0.1.0
 git push origin v0.1.0
 
 # Vérifier :
-# - L'image ghcr.io/<login>/demo-api:0.1.0 est créée
+# - L'image ghcr.io/<login>/mon-app:0.1.0 est créée
 # - Une release "v0.1.0" apparaît dans l'onglet Releases
 ```
 
-L'onglet Packages de votre dépôt GitHub affichera `demo-api` avec les tags `main`, `sha-xxxxxx`, et après le tag `0.1.0`, `latest`.
+L'onglet Packages de votre dépôt GitHub affichera `mon-app` avec les tags `main`, `sha-xxxxxx`, et après le tag `0.1.0`, `latest`.
 
 Rendez l'image publique si nécessaire : Settings du package → Make public.
 

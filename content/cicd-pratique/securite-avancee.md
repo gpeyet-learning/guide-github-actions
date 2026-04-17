@@ -36,7 +36,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        language: [python]    # Ajouter: javascript, java, go, ruby, swift, cpp...
+        # Adaptez à votre stack : python, javascript, java, go, ruby, swift, cpp...
+        language: [python, javascript, java]
 
     steps:
       - uses: actions/checkout@v4
@@ -65,7 +66,9 @@ Dependabot surveille les dépendances et crée des PRs automatiques quand des mi
 # .github/dependabot.yml
 version: 2
 updates:
-  # Dépendances Python
+  # Activez uniquement les écosystèmes pertinents pour votre stack :
+
+  # Python
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
@@ -76,13 +79,29 @@ updates:
     open-pull-requests-limit: 5
     commit-message:
       prefix: "chore(deps)"
-    reviewers:
-      - "mon-login"
     labels:
       - "dependencies"
       - "automated"
 
-  # Actions GitHub Actions
+  # Node.js / Angular
+  # - package-ecosystem: "npm"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "weekly"
+
+  # Java (Maven)
+  # - package-ecosystem: "maven"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "weekly"
+
+  # PHP
+  # - package-ecosystem: "composer"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "weekly"
+
+  # GitHub Actions (universel — à toujours activer)
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -92,7 +111,7 @@ updates:
 ```
 
 Dependabot crée des PRs comme :
-- `chore(deps): bump fastapi from 0.115.0 to 0.115.6`
+- `chore(deps): bump requests from 2.31.0 to 2.32.0`
 - `chore(deps): bump actions/checkout from v3 to v4`
 
 ### Auto-merger les updates de Dependabot
@@ -168,9 +187,9 @@ La vérification côté utilisateur :
 
 ```bash
 cosign verify \
-  --certificate-identity "https://github.com/mon-org/demo-api/.github/workflows/docker.yml@refs/heads/main" \
+  --certificate-identity "https://github.com/mon-org/mon-app/.github/workflows/docker.yml@refs/heads/main" \
   --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
-  ghcr.io/mon-org/demo-api:latest
+  ghcr.io/mon-org/mon-app:latest
 ```
 
 ## SBOM — Inventaire des composants
@@ -245,7 +264,7 @@ La **push protection** bloque les commits qui contiennent des secrets **avant** 
 
 Si un développeur tente de pousser un commit avec un secret, le push est rejeté avec un message explicatif et un lien pour signaler un faux positif.
 
-> **Exercice** : Activez CodeQL et Dependabot sur `demo-api`. Configurez Dependabot pour mettre à jour les dépendances pip et les GitHub Actions chaque semaine. Ajoutez un scan Trivy dans le workflow Docker qui échoue en cas de CVE critique. Vérifiez dans l'onglet Security que les alertes CodeQL apparaissent.
+> **Exercice** : Activez CodeQL et Dependabot sur `mon-app`. Configurez Dependabot pour mettre à jour les dépendances pip et les GitHub Actions chaque semaine. Ajoutez un scan Trivy dans le workflow Docker qui échoue en cas de CVE critique. Vérifiez dans l'onglet Security que les alertes CodeQL apparaissent.
 
 <details>
 <summary>Solution</summary>

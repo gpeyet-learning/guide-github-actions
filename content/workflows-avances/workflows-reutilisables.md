@@ -223,7 +223,7 @@ mon-org/
     └── .github/workflows/ci.yml
 ```
 
-> **Exercice** : Extrayez la logique de test de `demo-api` dans un reusable workflow nommé `reusable-python-tests.yml`. Ce workflow doit accepter en input la version Python et retourner en output le pourcentage de coverage. Le workflow principal `ci.yml` doit l'appeler.
+> **Exercice** : Extrayez la logique de test de `mon-app` dans un reusable workflow nommé `reusable-python-tests.yml`. Ce workflow doit accepter en input la version Python et retourner en output le pourcentage de coverage. Le workflow principal `ci.yml` doit l'appeler.
 
 <details>
 <summary>Solution</summary>

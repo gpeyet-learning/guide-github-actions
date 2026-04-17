@@ -227,7 +227,7 @@ jobs:
 
 La fonction `fromJson()` convertit une chaîne JSON en objet YAML — c'est le pont entre les outputs de jobs (toujours des strings) et la matrice (qui attend un tableau).
 
-> **Exercice** : Dans `demo-api`, modifiez le workflow CI pour tester sur Python 3.11 **et** 3.12 en parallèle. Configurez `fail-fast: false` pour toujours obtenir les résultats des deux versions même si l'une échoue.
+> **Exercice** : Dans `mon-app`, modifiez le workflow CI pour tester sur Python 3.11 **et** 3.12 en parallèle. Configurez `fail-fast: false` pour toujours obtenir les résultats des deux versions même si l'une échoue.
 
 <details>
 <summary>Solution</summary>
