@@ -1,0 +1,42 @@
+baseURL: "https://learning.peyet.ddns.net/github-actions/"
+title: "GitHub Actions"
+languageCode: fr
+defaultContentLanguage: fr
+
+disableKinds:
+  - taxonomy
+  - term
+
+module:
+  imports:
+    - path: github.com/gpeyet-learning/guides-theme
+
+markup:
+  highlight:
+    noClasses: false
+    codeFences: true
+    lineNos: false
+  tableOfContents:
+    startLevel: 2
+    endLevel: 3
+  goldmark:
+    renderer:
+      unsafe: true
+
+params:
+  description: "Maîtrisez GitHub Actions de zéro jusqu'aux runners auto-hébergés sur Kubernetes — automatisez vos pipelines CI/CD avec confiance."
+  tags:
+    - ci-cd
+    - github
+    - devops
+    - kubernetes
+    - automation
+  prerequisites:
+    - label: "Notions de base Git & GitHub"
+      url: "https://docs.github.com/fr/get-started"
+      external: true
+    - label: "YAML — syntaxe de base"
+      url: "https://learnxinyminutes.com/docs/yaml/"
+      external: true
+    - label: "Docker"
+      url: "https://learning.peyet.ddns.net/docker/"
