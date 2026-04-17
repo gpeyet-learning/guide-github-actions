@@ -8,14 +8,14 @@ weight: 20
 Un fichier de workflow est du YAML. Si vous n'êtes pas à l'aise avec YAML, retenez les règles essentielles :
 
 - L'**indentation** est significative — utilisez des espaces, jamais des tabulations.
-- Les **clés** sont séparées de leurs valeurs par `: `.
-- Les **listes** sont préfixées par `- `.
+- Les **clés** sont séparées de leurs valeurs par `:`.
+- Les **listes** sont préfixées par `-`.
 - Les **chaînes** peuvent être écrites avec ou sans guillemets (les guillemets sont nécessaires quand la valeur contient des caractères spéciaux).
 
 ## Anatomie complète d'un workflow
 
 ```yaml
-name: Nom affiché dans l'interface            # ① Nom du workflow (optionnel)
+name: Nom affiché dans l'interface             # ① Nom du workflow (optionnel)
 
 on:                                            # ② Événements déclencheurs
   push:
@@ -242,6 +242,7 @@ Mettons en pratique. Voici le workflow CI minimal pour `mon-app` — il vérifie
 Le principe : **si le `docker build` réussit, l'image est valide**. C'est un premier filet de sécurité universel, indépendant du langage.
 
 > **Exercice** : Créez le fichier `.github/workflows/ci.yml` dans le dépôt `mon-app`. Ce workflow doit :
+>
 > 1. Se déclencher sur tout push vers `main` et sur toute pull request vers `main`.
 > 2. Exécuter un seul job `build` sur `ubuntu-latest`.
 > 3. Récupérer le code avec `actions/checkout@v4`.

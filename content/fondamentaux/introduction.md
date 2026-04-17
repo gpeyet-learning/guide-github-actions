@@ -5,7 +5,7 @@ weight: 10
 
 ## Qu'est-ce que GitHub Actions ?
 
-GitHub Actions est la plateforme d'**automatisation** intégrée à GitHub. Elle permet d'exécuter des scripts automatiquement en réponse à des événements qui se produisent dans un dépôt Git : un push, l'ouverture d'une pull request, la création d'un tag, une release, ou même un déclenchement manuel.
+GitHub Actions est la plateforme d'**automatisation** intégrée à GitHub. Elle permet d'exécuter des scripts automatiquement en réponse à des évènements qui se produisent dans un dépôt Git : un push, l'ouverture d'une pull request, la création d'un tag, une release, ou même un déclenchement manuel.
 
 En pratique, GitHub Actions sert principalement à :
 
@@ -29,7 +29,7 @@ Avant d'écrire la moindre ligne de YAML, il faut assimiler le vocabulaire de ba
 
 ```mermaid
 graph TD
-    E[Événement<br/>Event] -->|déclenche| W[Workflow]
+    E[Évènement] -->|déclenche| W[Workflow]
     W --> J1[Job A]
     W --> J2[Job B]
     J1 --> S1[Step 1]
@@ -40,9 +40,9 @@ graph TD
     J2 -.->|runs-on| R
 ```
 
-### Événement (Event)
+### Évènement (Event)
 
-Un événement est ce qui déclenche un workflow. GitHub émet des événements pour pratiquement tout ce qui se passe dans un dépôt :
+Un évènement est ce qui déclenche un workflow. GitHub émet des évènements pour pratiquement tout ce qui se passe dans un dépôt :
 
 - `push` : un commit est poussé sur une branche
 - `pull_request` : une PR est ouverte, mise à jour, fermée
@@ -56,7 +56,8 @@ Un événement est ce qui déclenche un workflow. GitHub émet des événements 
 Un workflow est un **processus automatisé** défini dans un fichier YAML. Il est stocké dans le dépôt sous `.github/workflows/nom-du-workflow.yml`. Un dépôt peut avoir autant de workflows que nécessaire.
 
 Un workflow :
-- réagit à un ou plusieurs événements
+
+- réagit à un ou plusieurs évènements
 - contient un ou plusieurs jobs
 - s'exécute entièrement sur un runner
 
@@ -130,7 +131,7 @@ Un workflow est un fichier YAML placé dans `.github/workflows/`. Voici la struc
 # .github/workflows/ci.yml
 name: CI                   # Nom affiché dans l'interface GitHub
 
-on:                        # Événements déclencheurs
+on:                        # Évènements déclencheurs
   push:
     branches: [main]
 
