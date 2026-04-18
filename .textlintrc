@@ -1,0 +1,14 @@
+{
+  "rules": {
+    "terminology": {
+      "defaultTerms": false,
+      "terms": [
+        ["semver", "SemVer"],
+        ["github actions", "GitHub Actions"],
+        ["git\\b", "Git"],
+        ["repo\\b", "repository"]
+      ],
+      "skip": ["Code", "CodeBlock"]
+    }
+  }
+}
