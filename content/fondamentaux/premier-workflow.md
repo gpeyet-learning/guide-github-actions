@@ -15,37 +15,43 @@ Un fichier de workflow est du YAML. Si vous n'êtes pas à l'aise avec YAML, ret
 ## Anatomie complète d'un workflow
 
 ```yaml
-name: Nom affiché dans l'interface             # ① Nom du workflow (optionnel)
+name: Nom affiché dans l'interface            # [1]
 
-on:                                            # ② Événements déclencheurs
+on:                                           # [2]
   push:
     branches: [main, develop]
   pull_request:
     branches: [main]
 
-env:                                           # ③ Variables d'environnement globales (optionnel)
+env:                                          # [3]
   NODE_VERSION: "20"
 
-jobs:                                          # ④ Jobs
-  lint:                                        #    Identifiant du job
-    name: "Vérification du style"              #    Nom affiché (optionnel)
-    runs-on: ubuntu-latest                     #    Runner
-    steps:                                     #    Étapes
-      - uses: actions/checkout@v4              #    Action
-      - run: npm run lint                      #    Commande shell
+jobs:                                         # [4]
+  lint:
+    name: "Vérification du style"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm run lint
 
   test:
     name: "Tests unitaires"
     runs-on: ubuntu-latest
-    needs: lint                                # ⑤ Dépendance : test s'exécute après lint
+    needs: lint                               # [5]
     steps:
       - uses: actions/checkout@v4
       - run: npm test
 ```
 
+`[1]` **`name`** — nom du workflow, affiché dans l'onglet Actions (optionnel)
+`[2]` **`on`** — événements déclencheurs
+`[3]` **`env`** — variables d'environnement globales (optionnel)
+`[4]` **`jobs`** — liste des jobs à exécuter
+`[5]` **`needs`** — dépendance : ce job attend que `lint` soit terminé
+
 Décortiquons chaque section.
 
-## ① `name` — Le nom du workflow
+## `name` — Le nom du workflow
 
 ```yaml
 name: CI Pipeline
@@ -53,7 +59,7 @@ name: CI Pipeline
 
 Optionnel mais recommandé. Ce nom apparaît dans l'onglet Actions de GitHub. Sans ce champ, GitHub affiche le chemin du fichier.
 
-## ② `on` — Les déclencheurs
+## `on` — Les déclencheurs
 
 C'est la section la plus importante. Elle définit quand le workflow s'exécute.
 
@@ -125,7 +131,7 @@ on:
   workflow_dispatch:
 ```
 
-## ③ `env` — Variables d'environnement globales
+## `env` — Variables d'environnement globales
 
 ```yaml
 env:
@@ -135,7 +141,7 @@ env:
 
 Ces variables sont disponibles dans **tous les jobs et toutes les steps** du workflow. On peut aussi définir des variables au niveau d'un job ou d'une step — les niveaux plus précis écrasent les niveaux supérieurs.
 
-## ④ `jobs` — Les jobs
+## `jobs` — Les jobs
 
 Un job minimal :
 
