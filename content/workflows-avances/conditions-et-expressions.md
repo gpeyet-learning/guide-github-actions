@@ -9,38 +9,38 @@ GitHub Actions possède un mini-langage d'expressions qui permet d'évaluer des 
 
 ### Opérateurs
 
-| Opérateur | Description              | Exemple                                    |
-|-----------|--------------------------|--------------------------------------------|
-| `==`      | Égalité                  | `github.ref == 'refs/heads/main'`         |
-| `!=`      | Inégalité                | `github.event_name != 'pull_request'`     |
-| `&&`      | ET logique               | `a && b`                                   |
-| `\|\|`    | OU logique               | `a \|\| b`                                 |
-| `!`       | NON logique              | `!cancelled()`                             |
-| `>`       | Supérieur                | `steps.build.outputs.exit-code > 0`       |
+| Opérateur | Description | Exemple                               |
+| --------- | ----------- | ------------------------------------- |
+| `==`      | Égalité     | `github.ref == 'refs/heads/main'`     |
+| `!=`      | Inégalité   | `github.event_name != 'pull_request'` |
+| `&&`      | ET logique  | `a && b`                              |
+| `\|\|`    | OU logique  | `a \|\| b`                            |
+| `!`       | NON logique | `!cancelled()`                        |
+| `>`       | Supérieur   | `steps.build.outputs.exit-code > 0`   |
 
 ### Fonctions intégrées
 
-| Fonction                        | Description                                              |
-|---------------------------------|----------------------------------------------------------|
-| `contains(search, item)`        | Vrai si `search` contient `item`                        |
-| `startsWith(str, prefix)`       | Vrai si `str` commence par `prefix`                     |
-| `endsWith(str, suffix)`         | Vrai si `str` finit par `suffix`                        |
-| `format(str, ...args)`          | Formatage de chaîne (`{0}`, `{1}`…)                     |
-| `join(array, separator)`        | Joindre un tableau en chaîne                            |
-| `toJson(value)`                 | Convertir en JSON                                       |
-| `fromJson(string)`              | Parser du JSON                                          |
-| `hashFiles(path)`               | Hash SHA-256 des fichiers correspondant au pattern      |
+| Fonction                  | Description                                        |
+| ------------------------- | -------------------------------------------------- |
+| `contains(search, item)`  | Vrai si `search` contient `item`                   |
+| `startsWith(str, prefix)` | Vrai si `str` commence par `prefix`                |
+| `endsWith(str, suffix)`   | Vrai si `str` finit par `suffix`                   |
+| `format(str, ...args)`    | Formatage de chaîne (`{0}`, `{1}`…)                |
+| `join(array, separator)`  | Joindre un tableau en chaîne                       |
+| `toJson(value)`           | Convertir en JSON                                  |
+| `fromJson(string)`        | Parser du JSON                                     |
+| `hashFiles(path)`         | Hash SHA-256 des fichiers correspondant au pattern |
 
 ### Fonctions de statut
 
 Ces fonctions s'utilisent dans les conditions `if:` pour réagir au statut du job ou des steps précédents :
 
-| Fonction           | Vrai si...                                                              |
-|--------------------|-------------------------------------------------------------------------|
-| `success()`        | Toutes les steps précédentes ont réussi (comportement par défaut)       |
-| `failure()`        | Au moins une step précédente a échoué                                   |
-| `cancelled()`      | Le workflow a été annulé                                                |
-| `always()`         | Toujours (même en cas d'échec ou d'annulation)                          |
+| Fonction      | Vrai si...                                                        |
+| ------------- | ----------------------------------------------------------------- |
+| `success()`   | Toutes les steps précédentes ont réussi (comportement par défaut) |
+| `failure()`   | Au moins une step précédente a échoué                             |
+| `cancelled()` | Le workflow a été annulé                                          |
+| `always()`    | Toujours (même en cas d'échec ou d'annulation)                    |
 
 ## Conditions sur les steps
 
@@ -76,7 +76,7 @@ jobs:
 
   deploy-staging:
     needs: build
-    if: github.event_name == 'push'       # Ne déploie pas sur les PRs
+    if: github.event_name == 'push' # Ne déploie pas sur les PRs
     runs-on: ubuntu-latest
     steps:
       - run: echo "deploy staging"
@@ -106,7 +106,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 2               # Besoin du commit précédent pour comparer
+          fetch-depth: 2 # Besoin du commit précédent pour comparer
 
       - uses: dorny/paths-filter@v3
         id: changes
@@ -209,6 +209,7 @@ jobs:
 ```
 
 > **Exercice** : Ajoutez au workflow `ci.yml` de `mon-app` un job `notify` qui :
+>
 > 1. S'exécute **toujours** (`always()`), que les tests aient réussi ou échoué.
 > 2. Affiche "Tests réussis !" si les tests ont passé, ou "Tests échoués !" si ils ont échoué.
 > 3. Ne s'exécute que sur des pushs vers `main` (pas sur les PRs).
@@ -217,21 +218,22 @@ jobs:
 <summary>Solution</summary>
 
 ```yaml
-  notify:
-    needs: test
-    runs-on: ubuntu-latest
-    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - name: Résultat des tests
-        run: |
-          if [ "${{ needs.test.result }}" == "success" ]; then
-            echo "Tests réussis !"
-          else
-            echo "Tests échoués ! Statut : ${{ needs.test.result }}"
-          fi
+notify:
+  needs: test
+  runs-on: ubuntu-latest
+  if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+  steps:
+    - name: Résultat des tests
+      run: |
+        if [ "${{ needs.test.result }}" == "success" ]; then
+          echo "Tests réussis !"
+        else
+          echo "Tests échoués ! Statut : ${{ needs.test.result }}"
+        fi
 ```
 
 Points clés :
+
 - `always()` dans `if:` est nécessaire car sans lui, le job `notify` serait ignoré si `test` a échoué (le comportement par défaut de `needs` est de ne pas démarrer si un job dépendant a échoué).
 - `needs.test.result` retourne `"success"`, `"failure"`, `"cancelled"` ou `"skipped"`.
 - La combinaison `always() && github.event_name == 'push'` signifie "toujours exécuter, mais seulement si on est sur un push".

@@ -40,9 +40,9 @@ jobs:
       - name: Uploader le wheel
         uses: actions/upload-artifact@v4
         with:
-          name: python-package             # Nom de l'artifact
-          path: dist/                      # Fichier(s) ou dossier à archiver
-          retention-days: 7               # Durée de conservation (défaut : 90 jours)
+          name: python-package # Nom de l'artifact
+          path: dist/ # Fichier(s) ou dossier à archiver
+          retention-days: 7 # Durée de conservation (défaut : 90 jours)
 ```
 
 Après le run, l'artifact est téléchargeable depuis l'interface GitHub dans l'onglet Actions → le run → section "Artifacts".
@@ -63,14 +63,14 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    needs: build                           # Attendre que build soit terminé
+    needs: build # Attendre que build soit terminé
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: dist-files                 # Même nom que l'upload
-          path: dist/                      # Dossier de destination
+          name: dist-files # Même nom que l'upload
+          path: dist/ # Dossier de destination
 
-      - run: ls -la dist/                  # Les fichiers sont là
+      - run: ls -la dist/ # Les fichiers sont là
 ```
 
 ### Cas d'usage typiques des artifacts
@@ -88,7 +88,7 @@ jobs:
 
 - name: Uploader le rapport de coverage
   uses: actions/upload-artifact@v4
-  if: always()                             # Uploader même si les tests ont échoué
+  if: always() # Uploader même si les tests ont échoué
   with:
     name: coverage-report
     path: htmlcov/
@@ -158,7 +158,7 @@ Les actions officielles `setup-python`, `setup-node`, `setup-go` intègrent dire
 - uses: actions/setup-go@v5
   with:
     go-version: "1.23"
-    cache: true               # Met en cache le module cache Go
+    cache: true # Met en cache le module cache Go
 ```
 
 C'est l'approche recommandée — moins de configuration et comportement optimal par défaut.
@@ -171,8 +171,8 @@ C'est l'approche recommandée — moins de configuration et comportement optimal
 - uses: docker/build-push-action@v6
   with:
     context: .
-    cache-from: type=gha              # Lire depuis le cache GitHub Actions
-    cache-to: type=gha,mode=max       # Écrire dans le cache GitHub Actions
+    cache-from: type=gha # Lire depuis le cache GitHub Actions
+    cache-to: type=gha,mode=max # Écrire dans le cache GitHub Actions
     push: false
 ```
 
@@ -207,14 +207,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip                         # Cache des dépendances
+          cache: pip # Cache des dépendances
 
       - run: |
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
           python -m build                    # Construit le package
 
-      - uses: actions/upload-artifact@v4    # Partage le package avec les jobs suivants
+      - uses: actions/upload-artifact@v4 # Partage le package avec les jobs suivants
         with:
           name: dist
           path: dist/
@@ -230,7 +230,7 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - uses: actions/download-artifact@v4  # Récupère le package buildé
+      - uses: actions/download-artifact@v4 # Récupère le package buildé
         with:
           name: dist
           path: dist/
@@ -248,7 +248,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/main'     # Seulement sur main
+    if: github.ref == 'refs/heads/main' # Seulement sur main
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -262,7 +262,7 @@ jobs:
 > 1. Génère un rapport de coverage HTML avec `pytest --cov=app --cov-report=html`.
 > 2. Upload ce rapport comme artifact nommé `coverage-report`, même si les tests échouent.
 > 3. Configure le cache pip via `actions/setup-python@v5` avec `cache: pip`.
-> Vérifiez que l'artifact apparaît bien dans l'interface GitHub après le run.
+>    Vérifiez que l'artifact apparaît bien dans l'interface GitHub après le run.
 
 <details>
 <summary>Solution</summary>

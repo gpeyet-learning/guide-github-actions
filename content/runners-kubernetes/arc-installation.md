@@ -38,6 +38,7 @@ graph TD
 ## Authentification : GitHub App vs PAT
 
 ARC a besoin de s'authentifier auprès de GitHub pour :
+
 1. S'enregistrer comme runner
 2. Récupérer les jobs disponibles
 3. Rapporter les résultats
@@ -45,6 +46,7 @@ ARC a besoin de s'authentifier auprès de GitHub pour :
 ### Option 1 : GitHub App (recommandé)
 
 Une GitHub App offre plus de sécurité et de flexibilité qu'un PAT :
+
 - Permissions granulaires
 - Pas de durée d'expiration
 - Installable sur une organisation entière
@@ -132,7 +134,7 @@ Un **RunnerScaleSet** est la ressource Kubernetes qui représente un pool de run
 
 ```yaml
 # arc-runner-values.yaml
-githubConfigUrl: "https://github.com/MON-ORG"    # URL de l'organisation
+githubConfigUrl: "https://github.com/MON-ORG" # URL de l'organisation
 
 # Authentification via GitHub App
 githubConfigSecret: arc-github-app-secret
@@ -141,8 +143,8 @@ githubConfigSecret: arc-github-app-secret
 runnerScaleSetName: "k8s-runners"
 
 # Scaling
-minRunners: 0          # 0 = scale to zero quand inactif
-maxRunners: 10         # Maximum 10 runners simultanés
+minRunners: 0 # 0 = scale to zero quand inactif
+maxRunners: 10 # Maximum 10 runners simultanés
 
 # Configuration des pods runners
 template:
@@ -198,7 +200,7 @@ on:
 
 jobs:
   test:
-    runs-on: k8s-runners               # Nom défini dans runnerScaleSetName
+    runs-on: k8s-runners # Nom défini dans runnerScaleSetName
     steps:
       - run: |
           echo "Je tourne sur : $(hostname)"

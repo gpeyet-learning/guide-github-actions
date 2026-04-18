@@ -29,7 +29,7 @@ jobs:
 
 Ce workflow crée **3 jobs en parallèle**, un par version Python. L'interface GitHub les affiche clairement :
 
-```
+```text
 test (3.10) ✓
 test (3.11) ✓
 test (3.12) ✓
@@ -89,8 +89,8 @@ La variable `matrix.coverage` ou `matrix.experimental` n'existe que pour cette c
 
 ```yaml
 strategy:
-  fail-fast: false               # Ne pas annuler les autres jobs si l'un échoue
-  max-parallel: 2                # Limiter à 2 jobs simultanés (contrôle de coût)
+  fail-fast: false # Ne pas annuler les autres jobs si l'un échoue
+  max-parallel: 2 # Limiter à 2 jobs simultanés (contrôle de coût)
   matrix:
     python-version: ["3.10", "3.11", "3.12"]
 ```
@@ -150,7 +150,7 @@ jobs:
           path: dist/
 
   test:
-    needs: build                            # Fan-out après build
+    needs: build # Fan-out après build
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -163,7 +163,7 @@ jobs:
       - run: pytest
 
   deploy:
-    needs: test                             # Fan-in : attend TOUS les tests
+    needs: test # Fan-in : attend TOUS les tests
     runs-on: ubuntu-latest
     steps:
       - run: echo "deploy"
@@ -182,6 +182,7 @@ concurrency:
 ```
 
 Avec cette configuration :
+
 - Deux pushes rapides sur `main` → le premier workflow est annulé quand le second démarre.
 - `group` est la clé d'identification : les runs avec la même clé sont mutuellement exclusifs.
 - `cancel-in-progress: true` annule l'exécution précédente plutôt que d'attendre.

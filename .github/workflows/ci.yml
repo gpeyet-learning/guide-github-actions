@@ -11,17 +11,23 @@ on:
       - reopened
   workflow_dispatch:
 
+permissions: read-all
+
 jobs:
   hugo-build:
     name: Hugo Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Clone project
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
 
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
+        uses: peaceiris/actions-hugo@e3b661c523413d13d642651a5ba5fc0d2b344c0d # v3
         with:
           hugo-version: "latest"
 
@@ -29,7 +35,7 @@ jobs:
         run: hugo --minify
 
       - name: Upload html artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: html
           path: public
@@ -38,22 +44,27 @@ jobs:
     name: Docker Build
     runs-on: ubuntu-latest
     needs: hugo-build
+    permissions:
+      contents: read
+      packages: read
 
     steps:
       - name: Clone project
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
 
       - name: Download html
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: html
           path: public
 
       - name: Configure docker buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
       - name: Build docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: .
           push: false
@@ -79,7 +90,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           # super-linter needs the full git history to get the
           # list of files that changed across commits
@@ -87,13 +98,15 @@ jobs:
           persist-credentials: false
 
       - name: Download html
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: html
           path: public
 
       - name: Super-linter
-        uses: super-linter/super-linter@v8.6.0
+        uses: super-linter/super-linter@9e863354e3ff62e0727d37183162c4a88873df41 # v8.6.0
         env:
           # To report GitHub Actions status checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # No Go source files in this repo (go.mod is for Hugo Modules)
+          VALIDATE_GO_MODULES: false

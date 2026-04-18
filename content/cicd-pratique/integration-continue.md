@@ -33,47 +33,47 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
 <div class="lang-variant-body">
 
 ```yaml
-  lint:
-    name: "Lint"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
+lint:
+  name: "Lint"
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+        cache: pip
 
-      - run: pip install ruff
-      - run: ruff format --check .
-      - run: ruff check .
+    - run: pip install ruff
+    - run: ruff format --check .
+    - run: ruff check .
 
-  test:
-    name: "Tests (Python ${{ matrix.python-version }})"
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.11", "3.12"]
-    steps:
-      - uses: actions/checkout@v6
+test:
+  name: "Tests (Python ${{ matrix.python-version }})"
+  runs-on: ubuntu-latest
+  strategy:
+    fail-fast: false
+    matrix:
+      python-version: ["3.11", "3.12"]
+  steps:
+    - uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
-          cache-dependency-path: |
-            requirements.txt
-            requirements-dev.txt
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: pip
+        cache-dependency-path: |
+          requirements.txt
+          requirements-dev.txt
 
-      - run: pip install -r requirements.txt -r requirements-dev.txt
-      - run: pytest --cov=src --cov-report=xml --cov-report=term-missing
+    - run: pip install -r requirements.txt -r requirements-dev.txt
+    - run: pytest --cov=src --cov-report=xml --cov-report=term-missing
 
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: coverage-${{ matrix.python-version }}
-          path: coverage.xml
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-${{ matrix.python-version }}
+        path: coverage.xml
 ```
 
 **Outils** : [Ruff](https://github.com/astral-sh/ruff) (lint + format), [pytest](https://pytest.org) + [pytest-cov](https://pytest-cov.readthedocs.io/).
@@ -88,43 +88,43 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
 <div class="lang-variant-body">
 
 ```yaml
-  lint:
-    name: "Lint"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
+lint:
+  name: "Lint"
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "22"
+        cache: npm
 
-      - run: npm ci
-      - run: npm run lint        # npx eslint src/
+    - run: npm ci
+    - run: npm run lint # npx eslint src/
 
-  test:
-    name: "Tests (Node ${{ matrix.node-version }})"
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: ["20", "22"]
-    steps:
-      - uses: actions/checkout@v6
+test:
+  name: "Tests (Node ${{ matrix.node-version }})"
+  runs-on: ubuntu-latest
+  strategy:
+    fail-fast: false
+    matrix:
+      node-version: ["20", "22"]
+  steps:
+    - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: npm
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: npm
 
-      - run: npm ci
-      - run: npm test -- --coverage --reporter=verbose
+    - run: npm ci
+    - run: npm test -- --coverage --reporter=verbose
 
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: coverage-node-${{ matrix.node-version }}
-          path: coverage/
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-node-${{ matrix.node-version }}
+        path: coverage/
 ```
 
 **Outils** : [ESLint](https://eslint.org/) (lint), [Vitest](https://vitest.dev/) (tests + coverage via V8).
@@ -139,41 +139,41 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
 <div class="lang-variant-body">
 
 ```yaml
-  lint:
-    name: "Lint"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
+lint:
+  name: "Lint"
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "22"
+        cache: npm
 
-      - run: npm ci
-      - run: npx ng lint
+    - run: npm ci
+    - run: npx ng lint
 
-  test:
-    name: "Tests"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
+test:
+  name: "Tests"
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "22"
+        cache: npm
 
-      - run: npm ci
+    - run: npm ci
 
-      - name: Lancer les tests
-        run: npx ng test --watch=false --code-coverage
+    - name: Lancer les tests
+      run: npx ng test --watch=false --code-coverage
 
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: coverage-angular
-          path: coverage/
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-angular
+        path: coverage/
 ```
 
 **Outils** : `ng lint` (ESLint via Angular CLI), `ng test` (Vitest depuis Angular 19 — Karma est déprécié).
@@ -190,50 +190,50 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
 **Avec Maven :**
 
 ```yaml
-  lint:
-    name: "Lint (Checkstyle)"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
+lint:
+  name: "Lint (Checkstyle)"
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v6
 
-      - uses: actions/setup-java@v4
-        with:
-          java-version: "21"
-          distribution: temurin
-          cache: maven
+    - uses: actions/setup-java@v4
+      with:
+        java-version: "21"
+        distribution: temurin
+        cache: maven
 
-      - run: mvn --no-transfer-progress checkstyle:check
+    - run: mvn --no-transfer-progress checkstyle:check
 
-  test:
-    name: "Tests (Java ${{ matrix.java }})"
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        java: ["21", "17"]
-    steps:
-      - uses: actions/checkout@v6
+test:
+  name: "Tests (Java ${{ matrix.java }})"
+  runs-on: ubuntu-latest
+  strategy:
+    fail-fast: false
+    matrix:
+      java: ["21", "17"]
+  steps:
+    - uses: actions/checkout@v6
 
-      - uses: actions/setup-java@v4
-        with:
-          java-version: ${{ matrix.java }}
-          distribution: temurin
-          cache: maven
+    - uses: actions/setup-java@v4
+      with:
+        java-version: ${{ matrix.java }}
+        distribution: temurin
+        cache: maven
 
-      - run: mvn --no-transfer-progress verify
+    - run: mvn --no-transfer-progress verify
 
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: surefire-reports-java-${{ matrix.java }}
-          path: target/surefire-reports/
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: surefire-reports-java-${{ matrix.java }}
+        path: target/surefire-reports/
 ```
 
 **Avec Gradle :**
 
 ```yaml
-      - run: ./gradlew check         # lint : Checkstyle + SpotBugs
-      - run: ./gradlew test jacocoTestReport
+- run: ./gradlew check # lint : Checkstyle + SpotBugs
+- run: ./gradlew test jacocoTestReport
 ```
 
 **Outils** : [Checkstyle](https://checkstyle.org/) / [SpotBugs](https://spotbugs.github.io/) (lint), JUnit 5 (tests), JaCoCo (coverage).
@@ -248,45 +248,45 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
 <div class="lang-variant-body">
 
 ```yaml
-  lint:
-    name: "Lint (PHPCS + PHPStan)"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
+lint:
+  name: "Lint (PHPCS + PHPStan)"
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v6
 
-      # PHP est pré-installé sur ubuntu-latest (plusieurs versions via update-alternatives)
-      - name: Installer Composer et les dépendances
-        run: composer install --no-interaction --prefer-dist
+    # PHP est pré-installé sur ubuntu-latest (plusieurs versions via update-alternatives)
+    - name: Installer Composer et les dépendances
+      run: composer install --no-interaction --prefer-dist
 
-      - run: vendor/bin/phpcs --standard=PSR12 src/
-      - run: vendor/bin/phpstan analyse src/ --level=6
+    - run: vendor/bin/phpcs --standard=PSR12 src/
+    - run: vendor/bin/phpstan analyse src/ --level=6
 
-  test:
-    name: "Tests (PHP ${{ matrix.php }})"
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        php: ["8.2", "8.3"]
-    steps:
-      - uses: actions/checkout@v6
+test:
+  name: "Tests (PHP ${{ matrix.php }})"
+  runs-on: ubuntu-latest
+  strategy:
+    fail-fast: false
+    matrix:
+      php: ["8.2", "8.3"]
+  steps:
+    - uses: actions/checkout@v6
 
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          coverage: xdebug
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        coverage: xdebug
 
-      - run: composer install --no-interaction --prefer-dist
+    - run: composer install --no-interaction --prefer-dist
 
-      - name: Lancer les tests
-        run: vendor/bin/phpunit --coverage-clover coverage.xml
-        # Ou avec Pest : vendor/bin/pest --coverage --coverage-clover coverage.xml
+    - name: Lancer les tests
+      run: vendor/bin/phpunit --coverage-clover coverage.xml
+      # Ou avec Pest : vendor/bin/pest --coverage --coverage-clover coverage.xml
 
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: coverage-php-${{ matrix.php }}
-          path: coverage.xml
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-php-${{ matrix.php }}
+        path: coverage.xml
 ```
 
 **Outils** : [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) + [PHPStan](https://phpstan.org/) (lint), [PHPUnit](https://phpunit.de/) ou [Pest](https://pestphp.com/) (tests).
@@ -301,29 +301,29 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
 Cette étape est **identique quelle que soit la stack**, à condition que votre job `test` produise un fichier de coverage au format XML (Cobertura ou LCOV) :
 
 ```yaml
-  coverage-report:
-    name: "Rapport de coverage"
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v6
+coverage-report:
+  name: "Rapport de coverage"
+  needs: test
+  runs-on: ubuntu-latest
+  if: github.event_name == 'pull_request'
+  permissions:
+    contents: read
+    pull-requests: write
+  steps:
+    - uses: actions/checkout@v6
 
-      # Télécharger le rapport produit par le job test
-      # Adaptez le nom de l'artifact selon votre stack :
-      # coverage-3.12 (Python), coverage-node-22 (Node), coverage-angular, etc.
-      - uses: actions/download-artifact@v4
-        with:
-          name: coverage-3.12
-          path: coverage/
+    # Télécharger le rapport produit par le job test
+    # Adaptez le nom de l'artifact selon votre stack :
+    # coverage-3.12 (Python), coverage-node-22 (Node), coverage-angular, etc.
+    - uses: actions/download-artifact@v4
+      with:
+        name: coverage-3.12
+        path: coverage/
 
-      - uses: py-actions/py-cov-comment@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          coverage-xml-file: coverage/coverage.xml
+    - uses: py-actions/py-cov-comment@v1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        coverage-xml-file: coverage/coverage.xml
 ```
 
 ## Workflow complet
@@ -360,7 +360,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/download-artifact@v4
         with:
-          name: coverage-3.12   # Adaptez selon votre stack
+          name: coverage-3.12 # Adaptez selon votre stack
           path: coverage/
       - uses: py-actions/py-cov-comment@v1
         with:
@@ -398,21 +398,21 @@ Avec cette configuration, il est impossible de merger une PR si la CI a échoué
 [Codecov](https://codecov.io) centralise les rapports de coverage de tous les dépôts et supporte tous les formats (XML Cobertura, LCOV, JaCoCo…) :
 
 ```yaml
-      - uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage.xml
-          flags: unittests
-          fail_ci_if_error: true
+- uses: codecov/codecov-action@v5
+  with:
+    token: ${{ secrets.CODECOV_TOKEN }}
+    files: coverage.xml
+    flags: unittests
+    fail_ci_if_error: true
 ```
 
 ### SonarQube / SonarCloud
 
 ```yaml
-      - uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+- uses: SonarSource/sonarcloud-github-action@master
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 ```
 
 > **Exercice** : Finalisez le workflow CI complet de `mon-app` avec les jobs lint et test adaptés à votre stack. Créez une branch protection rule sur `main` qui exige le passage des deux jobs. Créez une PR depuis une branche `feature/add-endpoint` et vérifiez que le badge de statut apparaît dans la PR avant le merge.

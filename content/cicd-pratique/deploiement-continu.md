@@ -53,7 +53,7 @@ on:
 
 permissions:
   contents: read
-  packages: write            # Nécessaire pour GHCR
+  packages: write # Nécessaire pour GHCR
 
 jobs:
   build-push:
@@ -89,7 +89,7 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64,linux/arm64    # Multi-arch obligatoire
+          platforms: linux/amd64,linux/arm64 # Multi-arch obligatoire
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -101,11 +101,11 @@ jobs:
 
 Selon l'événement qui déclenche le workflow :
 
-| Événement             | Tags générés                                        |
-|-----------------------|-----------------------------------------------------|
-| Push sur `main`       | `main`, `sha-abc1234`                               |
-| Tag `v1.2.3`          | `1.2.3`, `1.2`, `latest`, `sha-abc1234`             |
-| Tag `v2.0.0`          | `2.0.0`, `2.0`, `latest`, `sha-abc1234`             |
+| Événement       | Tags générés                            |
+| --------------- | --------------------------------------- |
+| Push sur `main` | `main`, `sha-abc1234`                   |
+| Tag `v1.2.3`    | `1.2.3`, `1.2`, `latest`, `sha-abc1234` |
+| Tag `v2.0.0`    | `2.0.0`, `2.0`, `latest`, `sha-abc1234` |
 
 La règle `type=semver,pattern={{major}}.{{minor}}` crée un tag flottant `1.2` qui pointe toujours vers le dernier patch `1.2.x`.
 
@@ -132,7 +132,7 @@ spec:
     spec:
       containers:
         - name: mon-app
-          image: ghcr.io/mon-org/mon-app:latest   # Remplacé dynamiquement
+          image: ghcr.io/mon-org/mon-app:latest # Remplacé dynamiquement
           ports:
             - containerPort: 8000
           livenessProbe:
@@ -165,15 +165,15 @@ Deux approches principales :
 **1. kubectl direct** (si le cluster est accessible depuis internet) :
 
 ```yaml
-      - uses: azure/k8s-set-context@v4
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBECONFIG }}
+- uses: azure/k8s-set-context@v4
+  with:
+    method: kubeconfig
+    kubeconfig: ${{ secrets.KUBECONFIG }}
 
-      - run: |
-          kubectl set image deployment/mon-app \
-            mon-app=ghcr.io/${{ github.repository }}:sha-${{ github.sha }}
-          kubectl rollout status deployment/mon-app -n apps
+- run: |
+    kubectl set image deployment/mon-app \
+      mon-app=ghcr.io/${{ github.repository }}:sha-${{ github.sha }}
+    kubectl rollout status deployment/mon-app -n apps
 ```
 
 **2. GitOps avec ArgoCD / Flux** (recommandé pour les clusters privés) :
@@ -181,19 +181,19 @@ Deux approches principales :
 Le workflow met à jour un dépôt de configuration Git. ArgoCD ou Flux détecte le changement et applique le déploiement de façon autonome.
 
 ```yaml
-      - name: Mettre à jour l'image dans le dépôt GitOps
-        env:
-          TAG: sha-${{ github.sha }}
-        run: |
-          # Modifier le tag de l'image dans le manifeste
-          sed -i "s|image: ghcr.io/mon-org/mon-app:.*|image: ghcr.io/mon-org/mon-app:$TAG|" \
-            k8s/deployment.yaml
+- name: Mettre à jour l'image dans le dépôt GitOps
+  env:
+    TAG: sha-${{ github.sha }}
+  run: |
+    # Modifier le tag de l'image dans le manifeste
+    sed -i "s|image: ghcr.io/mon-org/mon-app:.*|image: ghcr.io/mon-org/mon-app:$TAG|" \
+      k8s/deployment.yaml
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add k8s/deployment.yaml
-          git commit -m "chore: update mon-app to $TAG"
-          git push
+    git config user.name "github-actions[bot]"
+    git config user.email "github-actions[bot]@users.noreply.github.com"
+    git add k8s/deployment.yaml
+    git commit -m "chore: update mon-app to $TAG"
+    git push
 ```
 
 ## Workflow complet : CI + CD intégrés
@@ -299,7 +299,7 @@ jobs:
   deploy-production:
     needs: [build-push, deploy-staging]
     runs-on: ubuntu-latest
-    environment: production             # Requiert une approbation manuelle
+    environment: production # Requiert une approbation manuelle
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - run: |
@@ -309,25 +309,25 @@ jobs:
 
 ## Créer une release GitHub
 
-Quand un tag semver est poussé, créer automatiquement une release GitHub :
+Quand un tag SemVer est poussé, créer automatiquement une release GitHub :
 
 ```yaml
-  create-release:
-    needs: build-push
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0                # Historique complet pour le changelog
+create-release:
+  needs: build-push
+  runs-on: ubuntu-latest
+  if: startsWith(github.ref, 'refs/tags/v')
+  permissions:
+    contents: write
+  steps:
+    - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0 # Historique complet pour le changelog
 
-      - name: Créer la release
-        uses: softprops/action-gh-release@v2
-        with:
-          generate_release_notes: true  # Génère automatiquement depuis les commits
-          make_latest: true
+    - name: Créer la release
+      uses: softprops/action-gh-release@v2
+      with:
+        generate_release_notes: true # Génère automatiquement depuis les commits
+        make_latest: true
 ```
 
 > **Exercice** : Ajoutez le Dockerfile à `mon-app` et créez le workflow `docker.yml`. Poussez sur `main` et vérifiez que l'image apparaît dans l'onglet **Packages** du dépôt sur GitHub. Créez ensuite un tag `v0.1.0` et vérifiez qu'une release est créée avec l'image taguée `0.1.0`.

@@ -7,14 +7,14 @@ weight: 130
 
 Les runners hébergés par GitHub sont excellents pour la majorité des cas. Mais certains scénarios nécessitent des runners sur votre propre infrastructure :
 
-| Besoin                              | Explication                                                        |
-|-------------------------------------|--------------------------------------------------------------------|
-| **Accès à des ressources privées**  | Base de données interne, API derrière VPN, registre privé          |
-| **Performances spécifiques**        | CPU/RAM/GPU dédiés, stockage NVMe, réseau rapide                   |
-| **Conformité et souveraineté**      | Les données ne doivent jamais quitter votre datacenter              |
-| **Coût à grande échelle**           | Des milliers de minutes/jour coûtent moins cher sur des machines propres |
-| **Environnement reproductible**     | Logiciels spécialisés pré-installés, drivers propriétaires          |
-| **Déploiement dans un réseau privé**| kubectl vers un cluster non exposé sur internet                     |
+| Besoin                               | Explication                                                              |
+| ------------------------------------ | ------------------------------------------------------------------------ |
+| **Accès à des ressources privées**   | Base de données interne, API derrière VPN, registre privé                |
+| **Performances spécifiques**         | CPU/RAM/GPU dédiés, stockage NVMe, réseau rapide                         |
+| **Conformité et souveraineté**       | Les données ne doivent jamais quitter votre datacenter                   |
+| **Coût à grande échelle**            | Des milliers de minutes/jour coûtent moins cher sur des machines propres |
+| **Environnement reproductible**      | Logiciels spécialisés pré-installés, drivers propriétaires               |
+| **Déploiement dans un réseau privé** | kubectl vers un cluster non exposé sur internet                          |
 
 ## Architecture d'un self-hosted runner
 
@@ -41,11 +41,11 @@ Le runner est un agent **qui tire** les jobs depuis GitHub (poll sortant). Il n'
 
 Un runner peut être enregistré à trois niveaux :
 
-| Niveau         | Portée                                   | Configuration                                 |
-|----------------|------------------------------------------|-----------------------------------------------|
-| **Repository** | Un seul dépôt                            | Settings → Actions → Runners                 |
-| **Organization** | Tous les dépôts de l'org             | Org Settings → Actions → Runners             |
-| **Enterprise** | Tous les dépôts de l'enterprise          | Enterprise Settings → Actions → Runners      |
+| Niveau           | Portée                          | Configuration                           |
+| ---------------- | ------------------------------- | --------------------------------------- |
+| **Repository**   | Un seul dépôt                   | Settings → Actions → Runners            |
+| **Organization** | Tous les dépôts de l'org        | Org Settings → Actions → Runners        |
+| **Enterprise**   | Tous les dépôts de l'enterprise | Enterprise Settings → Actions → Runners |
 
 Pour les runners Kubernetes en contexte personnel, le niveau **Organization** est recommandé : un seul pool de runners sert tous vos dépôts.
 
@@ -84,7 +84,7 @@ jobs:
 
 2. **Accès aux secrets de la machine** : si le runner tourne sous un compte avec des droits élevés, un job malveillant peut accéder aux credentials de la machine hôte.
 
-3. **Repos publics** : ne jamais utiliser des self-hosted runners avec des dépôts publics. N'importe qui peut forker un repo public et soumettre une PR qui exécutera du code arbitraire sur votre runner.
+3. **Repos publics** : ne jamais utiliser des self-hosted runners avec des dépôts publics. N'importe qui peut forker un repository public et soumettre une PR qui exécutera du code arbitraire sur votre runner.
 
 ### Bonnes pratiques
 
@@ -134,7 +134,7 @@ Ce runner est fonctionnel mais fragile (une seule instance, pas de scaling, gest
 ```yaml
 jobs:
   deploy-private:
-    runs-on: [self-hosted, linux, x64]    # Cibler les runners self-hosted
+    runs-on: [self-hosted, linux, x64] # Cibler les runners self-hosted
     steps:
       - uses: actions/checkout@v6
       - run: kubectl apply -f k8s/

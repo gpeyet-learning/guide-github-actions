@@ -27,17 +27,17 @@ graph TD
 
 Le plus utilisé. Il contient toutes les informations sur le run en cours :
 
-| Expression                     | Valeur                                          |
-|--------------------------------|-------------------------------------------------|
-| `github.sha`                   | SHA du commit qui a déclenché le workflow       |
-| `github.ref`                   | Référence (`refs/heads/main`)                   |
-| `github.ref_name`              | Nom court (`main`, `v1.0.0`)                    |
-| `github.event_name`            | Nom de l'événement (`push`, `pull_request`)     |
-| `github.actor`                 | Login de l'utilisateur qui a déclenché          |
-| `github.repository`            | `owner/repo`                                    |
-| `github.repository_owner`      | `owner`                                         |
-| `github.run_id`                | ID unique du run                                |
-| `github.run_number`            | Numéro séquentiel du run (1, 2, 3…)             |
+| Expression                | Valeur                                      |
+| ------------------------- | ------------------------------------------- |
+| `github.sha`              | SHA du commit qui a déclenché le workflow   |
+| `github.ref`              | Référence (`refs/heads/main`)               |
+| `github.ref_name`         | Nom court (`main`, `v1.0.0`)                |
+| `github.event_name`       | Nom de l'événement (`push`, `pull_request`) |
+| `github.actor`            | Login de l'utilisateur qui a déclenché      |
+| `github.repository`       | `owner/repo`                                |
+| `github.repository_owner` | `owner`                                     |
+| `github.run_id`           | ID unique du run                            |
+| `github.run_number`       | Numéro séquentiel du run (1, 2, 3…)         |
 
 ```yaml
 - run: echo "Commit ${{ github.sha }} par ${{ github.actor }}"
@@ -65,7 +65,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "$APP_NAME"          # mon-app
+      - run: echo "$APP_NAME" # mon-app
 ```
 
 ### 2. Variables locales au job
@@ -75,7 +75,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      BUILD_ENV: production            # Disponible dans toutes les steps du job
+      BUILD_ENV: production # Disponible dans toutes les steps du job
     steps:
       - run: echo "$BUILD_ENV"
 ```
@@ -86,7 +86,7 @@ jobs:
 steps:
   - name: Deploy
     env:
-      DEPLOY_TARGET: staging           # Disponible uniquement dans cette step
+      DEPLOY_TARGET: staging # Disponible uniquement dans cette step
     run: echo "Déploiement sur $DEPLOY_TARGET"
 ```
 
@@ -94,14 +94,14 @@ steps:
 
 GitHub injecte automatiquement plusieurs variables dans chaque step :
 
-| Variable              | Description                                    |
-|-----------------------|------------------------------------------------|
-| `GITHUB_SHA`          | SHA du commit (équivalent de `github.sha`)     |
-| `GITHUB_REF`          | Référence complète                             |
-| `GITHUB_REPOSITORY`   | `owner/repo`                                   |
-| `GITHUB_WORKSPACE`    | Chemin vers le dossier de travail du runner    |
-| `GITHUB_OUTPUT`       | Fichier pour définir des outputs de step       |
-| `GITHUB_ENV`          | Fichier pour définir des variables persistantes |
+| Variable            | Description                                     |
+| ------------------- | ----------------------------------------------- |
+| `GITHUB_SHA`        | SHA du commit (équivalent de `github.sha`)      |
+| `GITHUB_REF`        | Référence complète                              |
+| `GITHUB_REPOSITORY` | `owner/repo`                                    |
+| `GITHUB_WORKSPACE`  | Chemin vers le dossier de travail du runner     |
+| `GITHUB_OUTPUT`     | Fichier pour définir des outputs de step        |
+| `GITHUB_ENV`        | Fichier pour définir des variables persistantes |
 
 ### Définir une variable persistante entre les steps
 
@@ -168,9 +168,9 @@ Les permissions par défaut peuvent être restreintes ou élargies :
 
 ```yaml
 permissions:
-  contents: read           # Lire le dépôt
-  pull-requests: write     # Commenter les PRs
-  packages: write          # Publier sur GHCR
+  contents: read # Lire le dépôt
+  pull-requests: write # Commenter les PRs
+  packages: write # Publier sur GHCR
 ```
 
 ## Les environnements de déploiement
@@ -193,16 +193,17 @@ Créez deux environnements : `staging` et `production`. Pour `production`, activ
 jobs:
   deploy-staging:
     runs-on: ubuntu-latest
-    environment: staging                # Référence l'environnement
+    environment: staging # Référence l'environnement
     steps:
-      - run: echo "Deploy sur ${{ vars.DEPLOY_HOST }}"
-                                        # Utilise les vars de l'environnement staging
+      - run:
+          echo "Deploy sur ${{ vars.DEPLOY_HOST }}"
+          # Utilise les vars de l'environnement staging
 
   deploy-production:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: "https://api.monsite.com"    # URL affichée dans l'interface GitHub
+      url: "https://api.monsite.com" # URL affichée dans l'interface GitHub
     needs: deploy-staging
     steps:
       - run: echo "Deploy en production"
@@ -224,7 +225,7 @@ sequenceDiagram
     W->>W: Exécute les steps de déploiement
 ```
 
-## Niveaux de secrets : repo, organisation, environnement
+## Niveaux de secrets : repository, organisation, environnement
 
 Les secrets peuvent être définis à trois niveaux :
 
@@ -236,8 +237,8 @@ graph TD
     R1 -->|spécifiques| E2[Env: production]
 ```
 
-- **Organisation** : disponibles dans tous les repos de l'org (avec filtrage possible)
-- **Dépôt** : disponibles dans tous les workflows du repo
+- **Organisation** : disponibles dans tous les repositories de l'org (avec filtrage possible)
+- **Dépôt** : disponibles dans tous les workflows du repository
 - **Environnement** : disponibles uniquement quand le job référence cet environnement
 
 Priorité : **Environnement > Dépôt > Organisation**
@@ -246,7 +247,7 @@ Priorité : **Environnement > Dépôt > Organisation**
 
 - **Rotation** : changez régulièrement les secrets sensibles (tokens API, mots de passe).
 - **Principe de moindre privilège** : donnez aux tokens uniquement les permissions nécessaires.
-- **Jamais dans le code** : vérifiez votre historique git avant d'ajouter un secret — un secret committé dans git doit être considéré comme compromis, même si supprimé ensuite.
+- **Jamais dans le code** : vérifiez votre historique Git avant d'ajouter un secret — un secret committé dans Git doit être considéré comme compromis, même si supprimé ensuite.
 - **Variables vs secrets** : utilisez `vars` pour les valeurs non sensibles (noms d'hôtes, régions) et `secrets` pour les valeurs confidentielles (tokens, mots de passe).
 
 > **Exercice** : Dans le dépôt `mon-app`, créez un secret `API_KEY` avec la valeur `my-super-secret-key`. Ajoutez un environnement `staging`. Dans le workflow `ci.yml`, ajoutez un job `check-secrets` qui référence l'environnement `staging` et affiche un message en utilisant la variable d'environnement `API_KEY` (sans afficher sa valeur).
@@ -265,20 +266,20 @@ Dans les Settings du dépôt :
 Dans le workflow :
 
 ```yaml
-  check-secrets:
-    runs-on: ubuntu-latest
-    environment: staging
-    steps:
-      - name: Vérifier que le secret est disponible
-        env:
-          API_KEY: ${{ secrets.API_KEY }}
-        run: |
-          if [ -n "$API_KEY" ]; then
-            echo "Le secret API_KEY est bien configuré (longueur : ${#API_KEY} caractères)"
-          else
-            echo "ERREUR : le secret API_KEY est absent"
-            exit 1
-          fi
+check-secrets:
+  runs-on: ubuntu-latest
+  environment: staging
+  steps:
+    - name: Vérifier que le secret est disponible
+      env:
+        API_KEY: ${{ secrets.API_KEY }}
+      run: |
+        if [ -n "$API_KEY" ]; then
+          echo "Le secret API_KEY est bien configuré (longueur : ${#API_KEY} caractères)"
+        else
+          echo "ERREUR : le secret API_KEY est absent"
+          exit 1
+        fi
 ```
 
 La condition `[ -n "$API_KEY" ]` vérifie que la variable n'est pas vide sans l'afficher. `${#API_KEY}` affiche la longueur sans révéler la valeur.

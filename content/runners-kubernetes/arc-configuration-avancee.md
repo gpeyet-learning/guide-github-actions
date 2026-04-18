@@ -96,7 +96,7 @@ template:
       - name: dind
         image: docker:26-dind
         securityContext:
-          privileged: true            # DinD requiert des droits privilégiés
+          privileged: true # DinD requiert des droits privilégiés
         volumeMounts:
           - name: work
             mountPath: /home/runner/_work
@@ -128,15 +128,15 @@ template:
 [Kaniko](https://github.com/GoogleContainerTools/kaniko) build des images Docker sans nécessiter de démon Docker ni de droits privilégiés :
 
 ```yaml
-      - name: Build avec Kaniko
-        uses: int128/kaniko-action@v1
-        with:
-          push: true
-          tags: ghcr.io/${{ github.repository }}:latest
-          build-args: |
-            APP_VERSION=${{ github.sha }}
-          cache: true
-          cache-repository: ghcr.io/${{ github.repository }}/cache
+- name: Build avec Kaniko
+  uses: int128/kaniko-action@v1
+  with:
+    push: true
+    tags: ghcr.io/${{ github.repository }}:latest
+    build-args: |
+      APP_VERSION=${{ github.sha }}
+    cache: true
+    cache-repository: ghcr.io/${{ github.repository }}/cache
 ```
 
 Kaniko s'exécute comme un conteneur init dans le pod — plus sécurisé que DinD mais plus limité (pas de `docker run` interactif).
@@ -192,7 +192,7 @@ Dans le values.yaml du RunnerScaleSet :
 ```yaml
 template:
   spec:
-    serviceAccountName: arc-runner-deployer    # Attacher le ServiceAccount
+    serviceAccountName: arc-runner-deployer # Attacher le ServiceAccount
 
     containers:
       - name: runner
@@ -279,7 +279,7 @@ template:
   spec:
     containers:
       - name: runner
-        image: ghcr.io/mon-org/arc-runner:latest  # Image personnalisée
+        image: ghcr.io/mon-org/arc-runner:latest # Image personnalisée
         command: ["/home/runner/run.sh"]
 ```
 
@@ -288,19 +288,19 @@ template:
 Dans une configuration DinD ou multi-conteneurs, les steps partagent le même répertoire de travail (`/home/runner/_work`). Pour partager des données entre les conteneurs :
 
 ```yaml
-    volumes:
-      - name: shared-data
-        emptyDir: {}
+volumes:
+  - name: shared-data
+    emptyDir: {}
 
-    containers:
-      - name: runner
-        volumeMounts:
-          - name: shared-data
-            mountPath: /shared
-      - name: helper
-        volumeMounts:
-          - name: shared-data
-            mountPath: /shared
+containers:
+  - name: runner
+    volumeMounts:
+      - name: shared-data
+        mountPath: /shared
+  - name: helper
+    volumeMounts:
+      - name: shared-data
+        mountPath: /shared
 ```
 
 ## Scaling fin avec les métriques
@@ -310,8 +310,9 @@ ARC supporte le scaling basé sur les métriques Kubernetes (KEDA optionnel). Pa
 Paramètres de scaling dans `values.yaml` :
 
 ```yaml
-minRunners: 0          # Scale to zero en l'absence de jobs
-maxRunners: 20         # Limite absolue
+minRunners: 0 # Scale to zero en l'absence de jobs
+maxRunners: 20 # Limite absolue
+
 
 # Délai avant de supprimer un runner inactif
 # (laisse du temps pour les jobs rapides consécutifs)
@@ -407,7 +408,7 @@ Dans le workflow `docker.yml`, remplacez `ubuntu-latest` par `k8s-runners-docker
 ```yaml
 jobs:
   build-push:
-    runs-on: k8s-runners-docker    # Au lieu de ubuntu-latest
+    runs-on: k8s-runners-docker # Au lieu de ubuntu-latest
     steps:
       # Le reste du workflow est identique
 ```

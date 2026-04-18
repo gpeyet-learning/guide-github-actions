@@ -19,6 +19,7 @@ Le `GITHUB_TOKEN` est le token automatiquement injecté dans chaque workflow. Pa
 ### Configurer les permissions par défaut
 
 Dans **Settings → Actions → General → Workflow permissions**, choisissez :
+
 - **Read repository contents and packages permissions** (recommandé)
 
 Cela force chaque workflow à déclarer explicitement ses besoins.
@@ -28,7 +29,7 @@ Cela force chaque workflow à déclarer explicitement ses besoins.
 ```yaml
 # Principe de moindre privilège
 permissions:
-  contents: read           # Lire le code (nécessaire pour checkout)
+  contents: read # Lire le code (nécessaire pour checkout)
 
 jobs:
   build:
@@ -40,20 +41,20 @@ jobs:
 ### Déclarer des permissions au niveau d'un job
 
 ```yaml
-permissions: {}             # Aucune permission au niveau workflow
+permissions: {} # Aucune permission au niveau workflow
 
 jobs:
   test:
     runs-on: ubuntu-latest
     permissions:
-      contents: read        # Lecture seule pour ce job
+      contents: read # Lecture seule pour ce job
     steps:
       - uses: actions/checkout@v6
 
   publish:
     runs-on: ubuntu-latest
     permissions:
-      packages: write       # Écriture dans GHCR uniquement pour ce job
+      packages: write # Écriture dans GHCR uniquement pour ce job
       contents: read
     steps:
       - uses: docker/build-push-action@v6
@@ -61,16 +62,16 @@ jobs:
 
 ### Référence des permissions disponibles
 
-| Permission            | Description                                    |
-|-----------------------|------------------------------------------------|
-| `contents`            | Lire/écrire les fichiers du dépôt              |
-| `packages`            | Publier sur GHCR                               |
-| `pull-requests`       | Créer, modifier, commenter les PRs             |
-| `issues`              | Créer, modifier les issues                     |
-| `id-token`            | Générer un token OIDC (pour cloud sans secrets)|
-| `deployments`         | Créer/mettre à jour les déploiements           |
-| `checks`              | Créer/modifier les check runs                  |
-| `security-events`     | Créer des alertes de sécurité (CodeQL)         |
+| Permission        | Description                                     |
+| ----------------- | ----------------------------------------------- |
+| `contents`        | Lire/écrire les fichiers du dépôt               |
+| `packages`        | Publier sur GHCR                                |
+| `pull-requests`   | Créer, modifier, commenter les PRs              |
+| `issues`          | Créer, modifier les issues                      |
+| `id-token`        | Générer un token OIDC (pour cloud sans secrets) |
+| `deployments`     | Créer/mettre à jour les déploiements            |
+| `checks`          | Créer/modifier les check runs                   |
+| `security-events` | Créer des alertes de sécurité (CodeQL)          |
 
 ## OIDC — Se connecter au cloud sans secrets
 
@@ -94,13 +95,13 @@ sequenceDiagram
 
 ### Avantages vs secrets statiques
 
-| Aspect                  | Secrets statiques      | OIDC                      |
-|-------------------------|------------------------|---------------------------|
-| Stockage des credentials | Dans GitHub Secrets    | Aucun                     |
-| Durée de vie             | Indéfinie              | Quelques heures            |
-| Rotation                 | Manuelle               | Automatique               |
-| Audit                    | Difficile              | Natif via les logs cloud  |
-| Risque en cas de leak    | Permanent jusqu'à rotation | Négligeable (expiré)   |
+| Aspect                   | Secrets statiques          | OIDC                     |
+| ------------------------ | -------------------------- | ------------------------ |
+| Stockage des credentials | Dans GitHub Secrets        | Aucun                    |
+| Durée de vie             | Indéfinie                  | Quelques heures          |
+| Rotation                 | Manuelle                   | Automatique              |
+| Audit                    | Difficile                  | Natif via les logs cloud |
+| Risque en cas de leak    | Permanent jusqu'à rotation | Négligeable (expiré)     |
 
 ### Configuration OIDC avec AWS
 
@@ -138,7 +139,7 @@ Créer un rôle IAM avec cette trust policy :
 
 ```yaml
 permissions:
-  id-token: write          # Obligatoire pour OIDC
+  id-token: write # Obligatoire pour OIDC
   contents: read
 
 jobs:
@@ -171,8 +172,8 @@ jobs:
 # SÉCURISÉ
 - name: Traiter le titre
   env:
-    TITLE: ${{ github.event.issue.title }}     # Assigné comme variable d'env
-  run: echo "$TITLE"                            # Utilisé comme variable shell, jamais interpolé
+    TITLE: ${{ github.event.issue.title }} # Assigné comme variable d'env
+  run: echo "$TITLE" # Utilisé comme variable shell, jamais interpolé
 ```
 
 Quand la valeur est assignée à une variable d'environnement, elle ne passe pas par le parseur de commandes shell — c'est une chaîne de caractères inerte.
@@ -185,7 +186,7 @@ on:
     inputs:
       environment:
         type: choice
-        options: [staging, production]   # Seules ces valeurs sont acceptées
+        options: [staging, production] # Seules ces valeurs sont acceptées
 
 jobs:
   deploy:
@@ -207,7 +208,7 @@ jobs:
 - uses: actions/checkout@v6
 
 # Sécurisé : le SHA est immuable
-- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 ```
 
 Des outils comme [Dependabot](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/keeping-your-actions-up-to-date-with-dependabot) peuvent automatiquement mettre à jour ces SHAs.
@@ -237,8 +238,9 @@ Pour permettre aux PRs de fork d'accéder aux secrets de façon contrôlée, uti
 # → a accès aux secrets, mais exécute le code du FORK — DANGER si mal utilisé
 on:
   pull_request_target:
-    types: [labeled]           # Seulement quand un label est ajouté manuellement
-                               # ce label sert de validation humaine
+    types:
+      [labeled] # Seulement quand un label est ajouté manuellement
+      # ce label sert de validation humaine
 
 jobs:
   test-with-secrets:
@@ -247,14 +249,14 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ github.event.pull_request.head.sha }}  # Code du fork
+          ref: ${{ github.event.pull_request.head.sha }} # Code du fork
       - run: pytest
         env:
           API_KEY: ${{ secrets.API_KEY }}
 ```
 
 > **Règle d'or** : ne combinez jamais `pull_request_target` + checkout du code du fork + accès aux secrets sans validation humaine explicite.
-
+>
 > **Exercice** : Auditez le workflow `ci.yml` de `mon-app`. Ajoutez les déclarations de permissions explicites (minimales) nécessaires et corrigez toute utilisation de variables utilisateur directement dans les commandes `run:`.
 
 <details>
@@ -271,7 +273,7 @@ on:
 
 # Permissions minimales au niveau workflow
 permissions:
-  contents: read             # Pour actions/checkout
+  contents: read # Pour actions/checkout
 
 jobs:
   test:

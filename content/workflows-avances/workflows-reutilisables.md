@@ -36,7 +36,7 @@ Un workflow réutilisable se déclare avec le déclencheur `workflow_call` :
 name: Tests réutilisables
 
 on:
-  workflow_call:                          # ← Ce déclencheur le rend réutilisable
+  workflow_call: # ← Ce déclencheur le rend réutilisable
     inputs:
       python-version:
         description: "Version Python"
@@ -47,10 +47,10 @@ on:
         type: string
         default: "."
     secrets:
-      CODECOV_TOKEN:                      # Les secrets sont déclarés explicitement
+      CODECOV_TOKEN: # Les secrets sont déclarés explicitement
         required: false
     outputs:
-      coverage-percentage:               # Ce workflow peut retourner des valeurs
+      coverage-percentage: # Ce workflow peut retourner des valeurs
         description: "Pourcentage de coverage"
         value: ${{ jobs.test.outputs.coverage }}
 
@@ -113,6 +113,7 @@ jobs:
 ```
 
 La syntaxe pour référencer un workflow réutilisable :
+
 - **Même dépôt** : `./.github/workflows/reusable-test.yml`
 - **Autre dépôt** : `owner/repo/.github/workflows/file.yml@ref`
   - `@main` → branche
@@ -126,7 +127,7 @@ La syntaxe pour référencer un workflow réutilisable :
 jobs:
   test:
     uses: ./. github/workflows/reusable-test.yml
-    secrets: inherit                      # Transmet tous les secrets automatiquement
+    secrets: inherit # Transmet tous les secrets automatiquement
 ```
 
 `secrets: inherit` est pratique mais moins explicite — préférez lister les secrets individuellement pour des raisons de clarté et de sécurité.
@@ -158,7 +159,7 @@ outputs:
     value: ${{ steps.setup.outputs.python-path }}
 
 runs:
-  using: "composite"                      # ← Type composite
+  using: "composite" # ← Type composite
   steps:
     - id: setup
       uses: actions/setup-python@v5
@@ -193,16 +194,17 @@ steps:
 
 ## Reusable workflow vs Composite action — quand utiliser quoi ?
 
-| Critère                            | Reusable workflow         | Composite action          |
-|------------------------------------|---------------------------|---------------------------|
-| Niveau de réutilisation            | Jobs entiers              | Steps                     |
-| Runner                             | Configurable dans le workflow réutilisable | Hérite du job appelant  |
-| Appel depuis                       | `jobs.<id>.uses`          | `steps.<id>.uses`         |
-| Secrets                            | Doivent être transmis explicitement | Héritent du job         |
-| Parallélisme interne               | Oui (plusieurs jobs)      | Non (séquentiel)          |
-| Partage entre dépôts               | Oui                       | Oui                       |
+| Critère                 | Reusable workflow                          | Composite action       |
+| ----------------------- | ------------------------------------------ | ---------------------- |
+| Niveau de réutilisation | Jobs entiers                               | Steps                  |
+| Runner                  | Configurable dans le workflow réutilisable | Hérite du job appelant |
+| Appel depuis            | `jobs.<id>.uses`                           | `steps.<id>.uses`      |
+| Secrets                 | Doivent être transmis explicitement        | Héritent du job        |
+| Parallélisme interne    | Oui (plusieurs jobs)                       | Non (séquentiel)       |
+| Partage entre dépôts    | Oui                                        | Oui                    |
 
 En règle générale :
+
 - Utilisez une **composite action** pour factoriser des steps répétées dans un job (ex : setup de l'environnement).
 - Utilisez un **reusable workflow** pour factoriser des pipelines entiers partagés entre plusieurs dépôts.
 
@@ -210,7 +212,7 @@ En règle générale :
 
 Pour une organisation GitHub, la convention est de centraliser les workflows réutilisables dans un dépôt dédié, souvent appelé `.github` ou `shared-workflows` :
 
-```
+```text
 mon-org/
 ├── .github/                       # Repo spécial de profil d'organisation
 │   └── workflows/

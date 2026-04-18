@@ -33,7 +33,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      actions.github.com/scale-set-name: k8s-runners    # Cibler les pods runners
+      actions.github.com/scale-set-name: k8s-runners # Cibler les pods runners
 
   policyTypes:
     - Ingress
@@ -61,7 +61,7 @@ spec:
     # Autoriser la communication avec l'API Kubernetes (pour kubectl)
     - to:
         - ipBlock:
-            cidr: 10.0.0.1/32    # IP du kube-apiserver — à adapter
+            cidr: 10.0.0.1/32 # IP du kube-apiserver — à adapter
       ports:
         - port: 6443
           protocol: TCP
@@ -73,7 +73,7 @@ spec:
               kubernetes.io/metadata.name: apps
         - podSelector:
             matchLabels:
-              app: postgres      # Seulement la base de données de test
+              app: postgres # Seulement la base de données de test
       ports:
         - port: 5432
 ```
@@ -91,12 +91,12 @@ kubectl apply -f network-policy-runners.yaml
 template:
   spec:
     securityContext:
-      runAsNonRoot: true         # Ne jamais tourner en root
-      runAsUser: 1001            # UID du user "runner" dans l'image officielle
+      runAsNonRoot: true # Ne jamais tourner en root
+      runAsUser: 1001 # UID du user "runner" dans l'image officielle
       runAsGroup: 1001
       fsGroup: 1001
       seccompProfile:
-        type: RuntimeDefault     # Profil seccomp par défaut du runtime
+        type: RuntimeDefault # Profil seccomp par défaut du runtime
 
     containers:
       - name: runner
@@ -104,10 +104,10 @@ template:
         command: ["/home/runner/run.sh"]
         securityContext:
           allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: false  # Le runner a besoin d'écrire dans son home
+          readOnlyRootFilesystem: false # Le runner a besoin d'écrire dans son home
           capabilities:
             drop:
-              - ALL              # Supprimer toutes les capabilities Linux
+              - ALL # Supprimer toutes les capabilities Linux
 ```
 
 ## ResourceQuotas — Limiter la consommation de ressources
@@ -123,11 +123,11 @@ metadata:
   namespace: arc-runners
 spec:
   hard:
-    requests.cpu: "20"           # Maximum 20 cœurs cumulés
-    requests.memory: 40Gi        # Maximum 40 Gi de RAM cumulés
+    requests.cpu: "20" # Maximum 20 cœurs cumulés
+    requests.memory: 40Gi # Maximum 40 Gi de RAM cumulés
     limits.cpu: "40"
     limits.memory: 80Gi
-    pods: "20"                   # Maximum 20 pods simultanés
+    pods: "20" # Maximum 20 pods simultanés
     count/services: "10"
 ---
 apiVersion: v1
@@ -170,7 +170,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: arc-runner-deployer
-  namespace: apps                # Scope: uniquement le namespace apps
+  namespace: apps # Scope: uniquement le namespace apps
 rules:
   - apiGroups: ["apps"]
     resources: ["deployments"]
@@ -335,12 +335,12 @@ metrics:
 
 Métriques utiles :
 
-| Métrique                                           | Description                              |
-|----------------------------------------------------|------------------------------------------|
-| `gha_runners_registered_total`                     | Nombre de runners enregistrés            |
-| `gha_runner_scale_set_assigned_jobs_total`         | Jobs assignés aux runners                |
-| `gha_runner_scale_set_pending_ephemeral_runners`   | Runners en cours de démarrage            |
-| `gha_runner_scale_set_running_ephemeral_runners`   | Runners actifs                           |
+| Métrique                                         | Description                   |
+| ------------------------------------------------ | ----------------------------- |
+| `gha_runners_registered_total`                   | Nombre de runners enregistrés |
+| `gha_runner_scale_set_assigned_jobs_total`       | Jobs assignés aux runners     |
+| `gha_runner_scale_set_pending_ephemeral_runners` | Runners en cours de démarrage |
+| `gha_runner_scale_set_running_ephemeral_runners` | Runners actifs                |
 
 ### Alertes recommandées
 

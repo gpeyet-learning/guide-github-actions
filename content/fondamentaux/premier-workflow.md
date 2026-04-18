@@ -15,18 +15,18 @@ Un fichier de workflow est du YAML. Si vous n'êtes pas à l'aise avec YAML, ret
 ## Anatomie complète d'un workflow
 
 ```yaml
-name: Nom affiché dans l'interface            # [1]
+name: Nom affiché dans l'interface # [1]
 
-on:                                           # [2]
+on: # [2]
   push:
     branches: [main, develop]
   pull_request:
     branches: [main]
 
-env:                                          # [3]
+env: # [3]
   APP_NAME: mon-app
 
-jobs:                                         # [4]
+jobs: # [4]
   info:
     name: "Informations de run"
     runs-on: ubuntu-latest
@@ -36,7 +36,7 @@ jobs:                                         # [4]
   validate:
     name: "Validation"
     runs-on: ubuntu-latest
-    needs: info                               # [5]
+    needs: info # [5]
     steps:
       - run: echo "✓ $APP_NAME validé"
 ```
@@ -68,12 +68,12 @@ on:
   push:
     branches:
       - main
-      - "release/**"     # Wildcard : toutes les branches release/xxx
+      - "release/**" # Wildcard : toutes les branches release/xxx
     tags:
-      - "v*"             # Tous les tags commençant par v
+      - "v*" # Tous les tags commençant par v
     paths:
-      - "src/**"         # Seulement si des fichiers sous src/ ont changé
-      - "!docs/**"       # Sauf les fichiers sous docs/
+      - "src/**" # Seulement si des fichiers sous src/ ont changé
+      - "!docs/**" # Sauf les fichiers sous docs/
 ```
 
 Le filtrage par `paths` est très utile dans un monorepo : on ne déclenche le pipeline d'une application que si son code a réellement changé.
@@ -94,7 +94,7 @@ Les types disponibles pour `pull_request` incluent : `opened`, `closed`, `merged
 ```yaml
 on:
   schedule:
-    - cron: "0 8 * * 1-5"   # Tous les jours de semaine à 8h UTC
+    - cron: "0 8 * * 1-5" # Tous les jours de semaine à 8h UTC
 ```
 
 La syntaxe cron standard : `minute heure jour-du-mois mois jour-de-semaine`.
@@ -155,13 +155,13 @@ jobs:
 
 GitHub fournit des runners hébergés avec plusieurs systèmes :
 
-| Label                  | OS              | Architecture |
-|------------------------|-----------------|-------------|
-| `ubuntu-latest`        | Ubuntu 24.04    | x64         |
-| `ubuntu-22.04`         | Ubuntu 22.04    | x64         |
-| `windows-latest`       | Windows Server  | x64         |
-| `macos-latest`         | macOS 15        | ARM64       |
-| `macos-13`             | macOS 13        | x64         |
+| Label            | OS             | Architecture |
+| ---------------- | -------------- | ------------ |
+| `ubuntu-latest`  | Ubuntu 24.04   | x64          |
+| `ubuntu-22.04`   | Ubuntu 22.04   | x64          |
+| `windows-latest` | Windows Server | x64          |
+| `macos-latest`   | macOS 15       | ARM64        |
+| `macos-13`       | macOS 13       | x64          |
 
 > Recommandation : utilisez `ubuntu-latest` par défaut. C'est le plus rapide, le moins coûteux (×1) et le plus courant dans les exemples de la communauté.
 
@@ -204,13 +204,13 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs: lint           # Test attend que lint soit terminé
+    needs: lint # Test attend que lint soit terminé
     steps:
       - run: echo "test"
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [lint, test]   # Deploy attend lint ET test
+    needs: [lint, test] # Deploy attend lint ET test
     steps:
       - run: echo "deploy"
 ```

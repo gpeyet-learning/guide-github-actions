@@ -26,11 +26,11 @@ C'est la valeur fondamentale des actions : **l'abstraction**. Quelqu'un a résol
 
 Il existe trois types d'actions selon leur implémentation :
 
-| Type               | Langage      | Vitesse    | Usage typique                     |
-|--------------------|-------------|-----------|-----------------------------------|
-| JavaScript/TypeScript | Node.js   | Rapide     | Actions légères, appels API       |
-| Docker container   | N'importe lequel | Plus lent (image à puller) | Environnements spécialisés |
-| Composite          | Steps YAML  | Variable   | Réutiliser des steps entre jobs   |
+| Type                  | Langage          | Vitesse                    | Usage typique                   |
+| --------------------- | ---------------- | -------------------------- | ------------------------------- |
+| JavaScript/TypeScript | Node.js          | Rapide                     | Actions légères, appels API     |
+| Docker container      | N'importe lequel | Plus lent (image à puller) | Environnements spécialisés      |
+| Composite             | Steps YAML       | Variable                   | Réutiliser des steps entre jobs |
 
 ## Le Marketplace GitHub
 
@@ -40,16 +40,16 @@ Le [Marketplace GitHub Actions](https://github.com/marketplace?type=actions) rec
 
 Ces actions sont maintenues par GitHub et constituent les briques de base de tout workflow :
 
-| Action                      | Rôle                                          |
-|-----------------------------|-----------------------------------------------|
-| `actions/checkout`          | Cloner le dépôt dans le runner                |
-| `actions/setup-python`      | Installer une version de Python               |
-| `actions/setup-node`        | Installer une version de Node.js              |
-| `actions/setup-go`          | Installer une version de Go                   |
-| `actions/setup-java`        | Installer une version de Java                 |
-| `actions/cache`             | Mettre en cache des dossiers entre les runs   |
-| `actions/upload-artifact`   | Sauvegarder des fichiers produits par un job  |
-| `actions/download-artifact` | Récupérer des fichiers d'un autre job         |
+| Action                      | Rôle                                         |
+| --------------------------- | -------------------------------------------- |
+| `actions/checkout`          | Cloner le dépôt dans le runner               |
+| `actions/setup-python`      | Installer une version de Python              |
+| `actions/setup-node`        | Installer une version de Node.js             |
+| `actions/setup-go`          | Installer une version de Go                  |
+| `actions/setup-java`        | Installer une version de Java                |
+| `actions/cache`             | Mettre en cache des dossiers entre les runs  |
+| `actions/upload-artifact`   | Sauvegarder des fichiers produits par un job |
+| `actions/download-artifact` | Récupérer des fichiers d'un autre job        |
 
 ### Référencer une action
 
@@ -65,7 +65,7 @@ uses: actions/checkout@abc1234     # SHA de commit (le plus strict)
 
 ```yaml
 # Plus sécurisé :
-uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 ```
 
 ## Passer des paramètres avec `with`
@@ -76,7 +76,7 @@ Les actions acceptent des paramètres via la section `with` :
 - uses: actions/setup-python@v5
   with:
     python-version: "3.12"
-    cache: "pip"               # Active le cache pip automatiquement
+    cache: "pip" # Active le cache pip automatiquement
 ```
 
 ```yaml
@@ -157,9 +157,9 @@ Le chemin `./.github/actions/setup-python-env` est relatif à la racine du dép�
 - uses: actions/checkout@v6
   with:
     # Par défaut : checkout du commit qui a déclenché le workflow
-    fetch-depth: 0          # 0 = historique complet (utile pour semantic-release)
+    fetch-depth: 0 # 0 = historique complet (utile pour semantic-release)
     token: ${{ secrets.PAT }} # Token avec plus de permissions que le défaut
-    submodules: recursive   # Initialiser les sous-modules Git
+    submodules: recursive # Initialiser les sous-modules Git
 ```
 
 Sans `actions/checkout`, le répertoire de travail du runner est vide.
@@ -170,7 +170,7 @@ Sans `actions/checkout`, le répertoire de travail du runner est vide.
 - uses: actions/setup-python@v5
   with:
     python-version: "3.12"
-    cache: "pip"            # Met en cache ~/.cache/pip entre les runs
+    cache: "pip" # Met en cache ~/.cache/pip entre les runs
     cache-dependency-path: |
       requirements.txt
       requirements-dev.txt

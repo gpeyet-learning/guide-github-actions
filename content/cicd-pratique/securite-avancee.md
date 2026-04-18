@@ -25,11 +25,11 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: "0 2 * * 1"      # Scan hebdomadaire le lundi à 2h
+    - cron: "0 2 * * 1" # Scan hebdomadaire le lundi à 2h
 
 permissions:
   contents: read
-  security-events: write     # Pour publier les résultats dans l'onglet Security
+  security-events: write # Pour publier les résultats dans l'onglet Security
 
 jobs:
   analyze:
@@ -45,9 +45,9 @@ jobs:
       - uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
-          queries: security-and-quality    # Requêtes de sécurité + qualité
+          queries: security-and-quality # Requêtes de sécurité + qualité
 
-      - uses: github/codeql-action/autobuild@v3    # Build automatique si nécessaire
+      - uses: github/codeql-action/autobuild@v3 # Build automatique si nécessaire
 
       - uses: github/codeql-action/analyze@v3
         with:
@@ -111,6 +111,7 @@ updates:
 ```
 
 Dependabot crée des PRs comme :
+
 - `chore(deps): bump requests from 2.31.0 to 2.32.0`
 - `chore(deps): bump actions/checkout from v3 to v4`
 
@@ -161,26 +162,26 @@ jobs:
 [cosign](https://github.com/sigstore/cosign) permet de signer les images Docker pour garantir leur authenticité. Un utilisateur peut vérifier qu'une image a bien été produite par votre pipeline CI.
 
 ```yaml
-  sign-image:
-    needs: build-push
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write          # Pour OIDC keyless signing
-      packages: write
+sign-image:
+  needs: build-push
+  runs-on: ubuntu-latest
+  permissions:
+    id-token: write # Pour OIDC keyless signing
+    packages: write
 
-    steps:
-      - uses: sigstore/cosign-installer@v3
+  steps:
+    - uses: sigstore/cosign-installer@v3
 
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+    - uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Signer l'image
-        run: |
-          cosign sign --yes \
-            ghcr.io/${{ github.repository }}@${{ needs.build-push.outputs.digest }}
+    - name: Signer l'image
+      run: |
+        cosign sign --yes \
+          ghcr.io/${{ github.repository }}@${{ needs.build-push.outputs.digest }}
 ```
 
 La vérification côté utilisateur :
@@ -197,24 +198,24 @@ cosign verify \
 Un **Software Bill of Materials (SBOM)** est un inventaire exhaustif des composants d'un logiciel. Il permet d'évaluer rapidement l'impact d'une nouvelle CVE sur vos projets.
 
 ```yaml
-      - name: Générer le SBOM
-        uses: anchore/sbom-action@v0
-        with:
-          image: ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.version }}
-          format: spdx-json
-          output-file: sbom.spdx.json
+- name: Générer le SBOM
+  uses: anchore/sbom-action@v0
+  with:
+    image: ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.version }}
+    format: spdx-json
+    output-file: sbom.spdx.json
 
-      - name: Uploader le SBOM comme artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: sbom
-          path: sbom.spdx.json
+- name: Uploader le SBOM comme artifact
+  uses: actions/upload-artifact@v4
+  with:
+    name: sbom
+    path: sbom.spdx.json
 
-      - name: Attacher le SBOM à la release
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: gh release upload ${{ github.ref_name }} sbom.spdx.json
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+- name: Attacher le SBOM à la release
+  if: startsWith(github.ref, 'refs/tags/v')
+  run: gh release upload ${{ github.ref_name }} sbom.spdx.json
+  env:
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Scan de vulnérabilités sur l'image Docker
@@ -222,26 +223,26 @@ Un **Software Bill of Materials (SBOM)** est un inventaire exhaustif des composa
 [Trivy](https://github.com/aquasecurity/trivy) scanne les images Docker pour détecter les CVEs dans les packages du système et les dépendances applicatives.
 
 ```yaml
-  scan-image:
-    needs: build-push
-    runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-    steps:
-      - name: Scanner l'image avec Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ghcr.io/${{ github.repository }}:${{ needs.build-push.outputs.image-tag }}
-          format: "sarif"
-          output: "trivy-results.sarif"
-          severity: "CRITICAL,HIGH"
-          exit-code: "1"              # Échouer si des CVEs critiques/hautes sont trouvées
+scan-image:
+  needs: build-push
+  runs-on: ubuntu-latest
+  permissions:
+    security-events: write
+  steps:
+    - name: Scanner l'image avec Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ghcr.io/${{ github.repository }}:${{ needs.build-push.outputs.image-tag }}
+        format: "sarif"
+        output: "trivy-results.sarif"
+        severity: "CRITICAL,HIGH"
+        exit-code: "1" # Échouer si des CVEs critiques/hautes sont trouvées
 
-      - name: Uploader les résultats vers GitHub Security
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: "trivy-results.sarif"
+    - name: Uploader les résultats vers GitHub Security
+      if: always()
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: "trivy-results.sarif"
 ```
 
 Les résultats apparaissent dans **Security → Code scanning alerts**, aux côtés des alertes CodeQL.
@@ -291,8 +292,8 @@ git push origin main
 Si Trivy trouve des CVEs critiques dans l'image (ce qui peut arriver avec `python:3.12-slim`), utilisez `python:3.12-slim` avec les derniers patchs ou ajoutez des exceptions pour les faux positifs :
 
 ```yaml
-        with:
-          ignore-unfixed: true    # Ignorer les CVE sans correctif disponible
+with:
+  ignore-unfixed: true # Ignorer les CVE sans correctif disponible
 ```
 
 </details>

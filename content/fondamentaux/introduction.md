@@ -91,7 +91,7 @@ Le projet est simple volontairement — l'objectif n'est pas d'apprendre un fram
 
 ### Structure du projet
 
-```
+```text
 mon-app/
 ├── .github/
 │   └── workflows/         ← nos fichiers de workflow
@@ -106,7 +106,7 @@ Le langage et le framework applicatif n'ont pas d'importance pour la grande majo
 La seule phase où le langage compte réellement est le lint et les tests unitaires (chapitre [Intégration continue](/cicd-pratique/integration-continue/)). Ce chapitre présente des exemples pour les stacks les plus courantes : Python, Node.js, Angular, Java et PHP.
 
 > **Note** : remplacez `mon-app` par le nom de votre propre projet — les workflows Docker présentés dans ce guide s'appliquent sans modification.
-
+>
 > **Exercice** : Créez un dépôt public `mon-app` sur votre compte GitHub. Initialisez-le avec un `README.md`. Naviguez ensuite dans l'onglet **Actions** de ce dépôt et observez l'interface vide qui vous accueille.
 
 <details>
@@ -129,14 +129,14 @@ Un workflow est un fichier YAML placé dans `.github/workflows/`. Voici la struc
 
 ```yaml
 # .github/workflows/ci.yml
-name: CI                   # Nom affiché dans l'interface GitHub
+name: CI # Nom affiché dans l'interface GitHub
 
-on:                        # Évènements déclencheurs
+on: # Évènements déclencheurs
   push:
     branches: [main]
 
-jobs:                      # Définition des jobs
-  build:                   # Identifiant du job (libre)
+jobs: # Définition des jobs
+  build: # Identifiant du job (libre)
     runs-on: ubuntu-latest # Runner à utiliser
     steps:
       - name: Récupérer le code
@@ -152,21 +152,21 @@ Chaque section sera détaillée dans les chapitres suivants. Pour l'instant, ret
 
 GitHub Actions propose un niveau gratuit généreux :
 
-| Plan        | Minutes incluses/mois | Stockage artifacts |
-|-------------|----------------------|-------------------|
-| Free        | 2 000 min            | 500 MB            |
-| Pro         | 3 000 min            | 1 GB              |
-| Team        | 3 000 min            | 2 GB              |
-| Enterprise  | 50 000 min           | 50 GB             |
+| Plan       | Minutes incluses/mois | Stockage artifacts |
+| ---------- | --------------------- | ------------------ |
+| Free       | 2 000 min             | 500 MB             |
+| Pro        | 3 000 min             | 1 GB               |
+| Team       | 3 000 min             | 2 GB               |
+| Enterprise | 50 000 min            | 50 GB              |
 
 Ces quotas s'appliquent uniquement aux **repos privés**. Les **repos publics** bénéficient de minutes illimitées.
 
 Les multiplicateurs de coût selon le système d'exploitation du runner :
 
 | OS      | Multiplicateur |
-|---------|---------------|
-| Linux   | ×1            |
-| Windows | ×2            |
-| macOS   | ×10           |
+| ------- | -------------- |
+| Linux   | ×1             |
+| Windows | ×2             |
+| macOS   | ×10            |
 
 > En pratique, pour un projet personnel ou une petite équipe utilisant Linux, le plan gratuit est largement suffisant. Les self-hosted runners (que nous verrons en partie 4) ne consomment aucune minute GitHub.

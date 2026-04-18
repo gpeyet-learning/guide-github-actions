@@ -40,11 +40,11 @@ graph TD
 
 Le projet `mon-app` dispose de trois workflows :
 
-| Fichier                    | Déclencheur            | Runner              | Rôle                              |
-|---------------------------|------------------------|---------------------|-----------------------------------|
-| `ci.yml`                  | push, pull_request     | `k8s-runners`       | Lint, tests, coverage             |
-| `docker.yml`              | push main, tags        | `k8s-runners-docker`| Build, push image, scan           |
-| `deploy.yml`              | workflow_call          | `k8s-runners`       | Déploiement sur le cluster        |
+| Fichier      | Déclencheur        | Runner               | Rôle                       |
+| ------------ | ------------------ | -------------------- | -------------------------- |
+| `ci.yml`     | push, pull_request | `k8s-runners`        | Lint, tests, coverage      |
+| `docker.yml` | push main, tags    | `k8s-runners-docker` | Build, push image, scan    |
+| `deploy.yml` | workflow_call      | `k8s-runners`        | Déploiement sur le cluster |
 
 ## Le workflow CI (`ci.yml`)
 
@@ -69,7 +69,7 @@ concurrency:
 jobs:
   lint:
     name: "Lint"
-    runs-on: k8s-runners            # Runner privé sur Kubernetes
+    runs-on: k8s-runners # Runner privé sur Kubernetes
     steps:
       - uses: actions/checkout@v6
 
@@ -128,7 +128,7 @@ jobs:
 
 ## Le workflow Docker (`docker.yml`)
 
-```yaml
+````yaml
 # .github/workflows/docker.yml
 name: Docker Build & Deploy
 
@@ -141,7 +141,7 @@ on:
 permissions:
   contents: read
   packages: write
-  id-token: write              # Pour OIDC cosign
+  id-token: write # Pour OIDC cosign
 
 concurrency:
   group: docker-${{ github.ref }}
@@ -150,7 +150,7 @@ concurrency:
 jobs:
   build-push:
     name: "Build & Push"
-    runs-on: k8s-runners-docker    # Runner avec Docker-in-Docker
+    runs-on: k8s-runners-docker # Runner avec Docker-in-Docker
     outputs:
       image-digest: ${{ steps.build.outputs.digest }}
       image-tag: ${{ steps.meta.outputs.version }}
@@ -230,7 +230,7 @@ jobs:
   deploy-staging:
     name: "Deploy staging"
     needs: [build-push, scan]
-    runs-on: k8s-runners           # Runner avec ServiceAccount kubectl
+    runs-on: k8s-runners # Runner avec ServiceAccount kubectl
     environment: staging
     if: github.ref == 'refs/heads/main'
     steps:
@@ -257,7 +257,7 @@ jobs:
     name: "Deploy production"
     needs: [build-push, deploy-staging]
     runs-on: k8s-runners
-    environment: production         # Approbation manuelle requise
+    environment: production # Approbation manuelle requise
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v6
@@ -305,7 +305,7 @@ jobs:
               --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
               ghcr.io/${{ github.repository }}:${{ needs.build-push.outputs.image-tag }}
             ```
-```
+````
 
 ## Les manifestes Kubernetes pour `mon-app`
 
@@ -392,15 +392,15 @@ Sur GitHub → dépôt → Packages → mon-app → Package settings → Change 
 ## Rollback automatique en cas d'échec
 
 ```yaml
-      - name: Déployer avec rollback automatique
-        run: |
-          if ! kubectl rollout status deployment/mon-app -n staging --timeout=5m; then
-            echo "Le déploiement a échoué, rollback en cours..."
-            kubectl rollout undo deployment/mon-app -n staging
-            kubectl rollout status deployment/mon-app -n staging
-            echo "Rollback effectué"
-            exit 1
-          fi
+- name: Déployer avec rollback automatique
+  run: |
+    if ! kubectl rollout status deployment/mon-app -n staging --timeout=5m; then
+      echo "Le déploiement a échoué, rollback en cours..."
+      kubectl rollout undo deployment/mon-app -n staging
+      kubectl rollout status deployment/mon-app -n staging
+      echo "Rollback effectué"
+      exit 1
+    fi
 ```
 
 ## Résumé : Vue d'ensemble de l'écosystème complet
@@ -445,6 +445,7 @@ graph TD
 ```
 
 > **Exercice final** : Déployez l'ensemble du pipeline complet. Vérifiez que :
+>
 > 1. Une PR déclenche les tests sur `k8s-runners` et affiche un commentaire de coverage.
 > 2. Un push sur `main` déclenche le build Docker sur `k8s-runners-docker` et déploie en staging.
 > 3. Un tag `v0.2.0` déclenche le déploiement en production après approbation manuelle et crée une release GitHub.
