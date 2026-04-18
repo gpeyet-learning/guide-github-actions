@@ -71,7 +71,7 @@ jobs:
     name: "Lint"
     runs-on: k8s-runners            # Runner privé sur Kubernetes
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v5
         with:
@@ -90,7 +90,7 @@ jobs:
       matrix:
         python-version: ["3.11", "3.12"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v5
         with:
@@ -113,7 +113,7 @@ jobs:
     runs-on: k8s-runners
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/download-artifact@v4
         with:
@@ -157,7 +157,7 @@ jobs:
       full-image: ghcr.io/${{ github.repository }}@${{ steps.build.outputs.digest }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: docker/metadata-action@v5
         id: meta
@@ -234,7 +234,7 @@ jobs:
     environment: staging
     if: github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Mettre à jour l'image en staging
         env:
@@ -260,7 +260,7 @@ jobs:
     environment: production         # Approbation manuelle requise
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Déployer en production
         env:
@@ -281,7 +281,7 @@ jobs:
       contents: write
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 

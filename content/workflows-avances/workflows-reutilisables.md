@@ -63,7 +63,7 @@ jobs:
       run:
         working-directory: ${{ inputs.working-directory }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v5
         with:
@@ -182,7 +182,7 @@ runs:
 
 ```yaml
 steps:
-  - uses: actions/checkout@v4
+  - uses: actions/checkout@v6
 
   - uses: ./.github/actions/python-setup
     with:
@@ -249,7 +249,7 @@ jobs:
     outputs:
       coverage: ${{ steps.parse-coverage.outputs.pct }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v5
         with:

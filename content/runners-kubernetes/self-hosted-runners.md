@@ -136,7 +136,7 @@ jobs:
   deploy-private:
     runs-on: [self-hosted, linux, x64]    # Cibler les runners self-hosted
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: kubectl apply -f k8s/
 ```
 

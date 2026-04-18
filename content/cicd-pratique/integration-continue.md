@@ -37,7 +37,7 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
     name: "Lint"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v5
         with:
@@ -56,7 +56,7 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
       matrix:
         python-version: ["3.11", "3.12"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v5
         with:
@@ -92,7 +92,7 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
     name: "Lint"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-node@v4
         with:
@@ -110,7 +110,7 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
       matrix:
         node-version: ["20", "22"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-node@v4
         with:
@@ -143,7 +143,7 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
     name: "Lint"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-node@v4
         with:
@@ -157,7 +157,7 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
     name: "Tests"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-node@v4
         with:
@@ -194,7 +194,7 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
     name: "Lint (Checkstyle)"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-java@v4
         with:
@@ -212,7 +212,7 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
       matrix:
         java: ["21", "17"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-java@v4
         with:
@@ -252,7 +252,7 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
     name: "Lint (PHPCS + PHPStan)"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # PHP est pré-installé sur ubuntu-latest (plusieurs versions via update-alternatives)
       - name: Installer Composer et les dépendances
@@ -269,7 +269,7 @@ Choisissez votre stack pour voir les jobs `lint` et `test` correspondants :
       matrix:
         php: ["8.2", "8.3"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -310,7 +310,7 @@ Cette étape est **identique quelle que soit la stack**, à condition que votre 
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # Télécharger le rapport produit par le job test
       # Adaptez le nom de l'artifact selon votre stack :
@@ -357,7 +357,7 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v4
         with:
           name: coverage-3.12   # Adaptez selon votre stack

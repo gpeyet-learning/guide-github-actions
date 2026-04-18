@@ -157,7 +157,7 @@ steps:
 Un secret spécial est **automatiquement disponible** dans chaque workflow sans configuration :
 
 ```yaml
-- uses: actions/checkout@v4
+- uses: actions/checkout@v6
   with:
     token: ${{ secrets.GITHUB_TOKEN }}
 ```

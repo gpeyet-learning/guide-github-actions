@@ -34,7 +34,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 ```
 
 ### Déclarer des permissions au niveau d'un job
@@ -48,7 +48,7 @@ jobs:
     permissions:
       contents: read        # Lecture seule pour ce job
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
   publish:
     runs-on: ubuntu-latest
@@ -204,7 +204,7 @@ jobs:
 
 ```yaml
 # Risqué : un tag peut être réécrit
-- uses: actions/checkout@v4
+- uses: actions/checkout@v6
 
 # Sécurisé : le SHA est immuable
 - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
@@ -245,7 +245,7 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'safe to test')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.sha }}  # Code du fork
       - run: pytest
@@ -282,7 +282,7 @@ jobs:
       matrix:
         python-version: ["3.11", "3.12"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v5
         with:

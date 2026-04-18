@@ -209,7 +209,7 @@ jobs:
   deploy:
     runs-on: k8s-runners
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: |
           # kubectl utilise automatiquement le token du ServiceAccount
           kubectl set image deployment/mon-app \
@@ -225,7 +225,7 @@ jobs:
   deploy:
     runs-on: k8s-runners
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Configurer kubectl
         run: |

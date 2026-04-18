@@ -40,7 +40,7 @@ jobs:
         language: [python, javascript, java]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: github/codeql-action/init@v3
         with:
@@ -138,7 +138,7 @@ jobs:
       (contains(github.event.pull_request.title, 'bump') &&
        !startsWith(github.event.pull_request.title, 'chore(deps): bump') == false)
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Récupérer les métadonnées Dependabot
         id: meta

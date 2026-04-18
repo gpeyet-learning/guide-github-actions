@@ -140,7 +140,7 @@ jobs:                      # Définition des jobs
     runs-on: ubuntu-latest # Runner à utiliser
     steps:
       - name: Récupérer le code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Afficher un message
         run: echo "Hello, GitHub Actions !"

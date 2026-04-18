@@ -18,7 +18,7 @@ jobs:
         python-version: ["3.10", "3.11", "3.12"]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v5
         with:
@@ -106,19 +106,19 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: ruff check .
 
   type-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: mypy app/
 
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: pytest
 ```
 
@@ -207,7 +207,7 @@ jobs:
     outputs:
       test-suites: ${{ steps.find.outputs.suites }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - id: find
         run: |
           # Trouver tous les dossiers de test et en faire une liste JSON
@@ -221,7 +221,7 @@ jobs:
       matrix:
         suite: ${{ fromJson(needs.discover-tests.outputs.test-suites) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: pytest ${{ matrix.suite }}
 ```
 
@@ -251,7 +251,7 @@ jobs:
 
     steps:
       - name: Cloner le code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Installer Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5

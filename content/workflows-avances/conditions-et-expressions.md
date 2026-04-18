@@ -104,7 +104,7 @@ jobs:
       api-changed: ${{ steps.changes.outputs.api }}
       frontend-changed: ${{ steps.changes.outputs.frontend }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 2               # Besoin du commit précédent pour comparer
 
