@@ -24,30 +24,28 @@ on:                                           # [2]
     branches: [main]
 
 env:                                          # [3]
-  NODE_VERSION: "20"
+  APP_NAME: mon-app
 
 jobs:                                         # [4]
-  lint:
-    name: "Vérification du style"
+  info:
+    name: "Informations de run"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: npm run lint
+      - run: echo "Déclenchement sur ${{ github.ref_name }} par ${{ github.actor }}"
 
-  test:
-    name: "Tests unitaires"
+  validate:
+    name: "Validation"
     runs-on: ubuntu-latest
-    needs: lint                               # [5]
+    needs: info                               # [5]
     steps:
-      - uses: actions/checkout@v4
-      - run: npm test
+      - run: echo "✓ $APP_NAME validé"
 ```
 
-`[1]` **`name`** — nom du workflow, affiché dans l'onglet Actions (optionnel)
-`[2]` **`on`** — événements déclencheurs
-`[3]` **`env`** — variables d'environnement globales (optionnel)
-`[4]` **`jobs`** — liste des jobs à exécuter
-`[5]` **`needs`** — dépendance : ce job attend que `lint` soit terminé
+`[1]` **`name`** — nom du workflow, affiché dans l'onglet Actions (optionnel)<br>
+`[2]` **`on`** — événements déclencheurs<br>
+`[3]` **`env`** — variables d'environnement globales (optionnel)<br>
+`[4]` **`jobs`** — liste des jobs à exécuter<br>
+`[5]` **`needs`** — dépendance : ce job attend que `lint` soit terminé<br>
 
 Décortiquons chaque section.
 
@@ -167,34 +165,31 @@ GitHub fournit des runners hébergés avec plusieurs systèmes :
 
 > Recommandation : utilisez `ubuntu-latest` par défaut. C'est le plus rapide, le moins coûteux (×1) et le plus courant dans les exemples de la communauté.
 
-### Les steps — Actions vs commandes shell
+### Les steps — commandes shell et actions
 
-Une step est soit une **action** (`uses`), soit une **commande** (`run`) :
+Une step est soit une **commande shell** (`run`), soit une **action réutilisable** (`uses`) :
 
 ```yaml
 steps:
-  # Utiliser une action du marketplace
-  - name: Cloner le code
-    uses: actions/checkout@v4
-
-  # Exécuter une commande shell
+  # Commande shell simple
   - name: Afficher la version Python
-    run: python --version
+    run: python3 --version
 
-  # Commande multi-lignes
-  - name: Préparer l'environnement
+  # Commande multi-lignes (syntaxe | : préserve les retours à la ligne)
+  - name: Inspecter l'environnement
     run: |
-      pip install -r requirements.txt
-      pip install -r requirements-dev.txt
+      echo "OS     : $(uname -s)"
+      echo "Python : $(python3 --version)"
+      echo "Docker : $(docker --version)"
 
-  # Commande avec variables d'environnement locales à la step
+  # Commande avec variable d'environnement locale à la step
   - name: Build avec une variable
     env:
       BUILD_ENV: production
     run: echo "Build pour $BUILD_ENV"
 ```
 
-La syntaxe `|` en YAML préserve les retours à la ligne — c'est la façon standard d'écrire des scripts multi-lignes.
+> Les steps peuvent aussi utiliser des **actions** (`uses`) — des briques réutilisables publiées sur le Marketplace. C'est l'objet du chapitre suivant.
 
 ### `needs` — Dépendances entre jobs
 
@@ -243,17 +238,16 @@ La liste complète est disponible dans le [dépôt `actions/runner-images`](http
 
 ## Premier workflow concret : `mon-app`
 
-Mettons en pratique. Voici le workflow CI minimal pour `mon-app` — il vérifie que le projet se build correctement à chaque push. C'est la base sur laquelle nous construirons les pipelines lint+test dans les chapitres suivants.
+Mettons en pratique. Ce premier workflow ne fait pas encore de CI à proprement parler — il n'a pas encore accès au code du dépôt (cela vient au chapitre suivant). L'objectif est de maîtriser la structure : déclencheurs, jobs, dépendances, variables d'environnement, commandes shell.
 
-Le principe : **si le `docker build` réussit, l'image est valide**. C'est un premier filet de sécurité universel, indépendant du langage.
+Les runners GitHub viennent avec un environnement riche pré-installé. On peut s'en servir dès ce premier workflow pour afficher des informations utiles et valider l'environnement de build.
 
 > **Exercice** : Créez le fichier `.github/workflows/ci.yml` dans le dépôt `mon-app`. Ce workflow doit :
 >
 > 1. Se déclencher sur tout push vers `main` et sur toute pull request vers `main`.
-> 2. Exécuter un seul job `build` sur `ubuntu-latest`.
-> 3. Récupérer le code avec `actions/checkout@v4`.
-> 4. Configurer Docker Buildx (indice : action `docker/setup-buildx-action@v3`).
-> 5. Construire l'image Docker sans la pousser.
+> 2. Déclarer une variable d'environnement globale `IMAGE_NAME` à `"mon-app"`.
+> 3. Contenir un job `info` sur `ubuntu-latest` qui affiche sur trois lignes séparées : l'événement déclencheur (`github.event_name`), la branche (`github.ref_name`) et l'auteur du commit (`github.actor`).
+> 4. Contenir un second job `check` qui dépend de `info` et affiche le nom de l'image cible (via `IMAGE_NAME`), la version de Docker et la version de Docker Buildx disponibles sur le runner.
 
 <details>
 <summary>Solution</summary>
@@ -268,31 +262,38 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  IMAGE_NAME: mon-app
+
 jobs:
-  build:
+  info:
+    name: "Informations de run"
     runs-on: ubuntu-latest
     steps:
-      - name: Cloner le code
-        uses: actions/checkout@v4
+      - name: Contexte du déclenchement
+        run: |
+          echo "Événement : ${{ github.event_name }}"
+          echo "Branche   : ${{ github.ref_name }}"
+          echo "Auteur    : ${{ github.actor }}"
 
-      - name: Configurer Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Vérifier que l'image se build
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: false          # Build local uniquement — pas de push sur un registry
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+  check:
+    name: "Vérification de l'environnement"
+    runs-on: ubuntu-latest
+    needs: info
+    steps:
+      - name: Outils disponibles
+        run: |
+          echo "Image cible : $IMAGE_NAME"
+          echo "Docker      : $(docker --version)"
+          echo "Buildx      : $(docker buildx version)"
 ```
 
 Points importants :
 
-- `actions/checkout@v4` est indispensable — sans lui, le runner démarre avec un répertoire de travail vide.
-- `docker/setup-buildx-action@v3` active BuildKit, qui apporte le cache de build et le support multi-arch.
-- `push: false` build l'image localement sans la publier — parfait pour valider que le `Dockerfile` est correct.
-- `cache-from/cache-to: type=gha` met en cache les layers Docker entre les runs pour accélérer les builds suivants.
+- `${{ github.event_name }}` et les autres expressions sont des **variables de contexte** — GitHub Actions les remplace par leurs valeurs réelles au moment de l'exécution.
+- `$IMAGE_NAME` est la variable d'environnement globale définie sous `env:` — disponible dans tous les jobs et toutes les steps.
+- Le job `check` ne démarre qu'une fois `info` terminé avec succès grâce à `needs: info`.
+- Docker et Docker Buildx sont pré-installés sur `ubuntu-latest` — pas besoin de les configurer à ce stade.
 
 </details>
 

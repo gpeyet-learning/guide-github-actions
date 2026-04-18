@@ -255,6 +255,7 @@ Priorité : **Environnement > Dépôt > Organisation**
 <summary>Solution</summary>
 
 Dans les Settings du dépôt :
+
 1. **Settings → Secrets and variables → Actions → New repository secret**
    - Name: `API_KEY`, Value: `my-super-secret-key`
 

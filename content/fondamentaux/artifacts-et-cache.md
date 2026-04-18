@@ -12,14 +12,14 @@ Chaque job d'un workflow tourne sur un **runner isolé** et éphémère. À la f
 
 ```mermaid
 graph LR
+    subgraph Run N+1
+        J4[Job: build] -->|cache hit| C[(Cache Storage)]
+        C -.->|restauré| J4
+    end
     subgraph Run N
         J1[Job: build] -->|upload artifact| A[(Artifact Storage)]
         A -->|download artifact| J2[Job: test]
         A -->|download artifact| J3[Job: deploy]
-    end
-    subgraph Run N+1
-        J4[Job: build] -->|cache hit| C[(Cache Storage)]
-        C -.->|restauré| J4
     end
 ```
 
@@ -258,6 +258,7 @@ jobs:
 ```
 
 > **Exercice** : Modifiez le workflow `ci.yml` de `mon-app` pour qu'il :
+>
 > 1. Génère un rapport de coverage HTML avec `pytest --cov=app --cov-report=html`.
 > 2. Upload ce rapport comme artifact nommé `coverage-report`, même si les tests échouent.
 > 3. Configure le cache pip via `actions/setup-python@v5` avec `cache: pip`.

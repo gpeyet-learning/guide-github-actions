@@ -5,9 +5,7 @@ weight: 30
 
 ## Qu'est-ce qu'une action ?
 
-Une **action** est une unité de code réutilisable — l'équivalent d'une fonction dans un workflow. Elle encapsule une tâche complexe derrière une interface simple.
-
-Au lieu d'écrire :
+Dans le chapitre précédent, le workflow `ci.yml` utilisait uniquement des commandes `run`. Il tournait, affichait des informations — mais il n'avait pas accès au code du dépôt. Pour cloner le dépôt manuellement, il faudrait écrire :
 
 ```yaml
 run: |
@@ -16,13 +14,13 @@ run: |
   git checkout ${{ github.sha }}
 ```
 
-On écrit simplement :
+Avec une action, on écrit simplement :
 
 ```yaml
 uses: actions/checkout@v4
 ```
 
-C'est la valeur fondamentale des actions : **l'abstraction**. Quelqu'un a résolu ce problème une fois, correctement, et tout le monde peut en bénéficier.
+C'est la valeur fondamentale des actions : **l'abstraction**. Quelqu'un a résolu ce problème une fois, correctement, et tout le monde en bénéficie. Une **action** est une unité de code réutilisable — l'équivalent d'une fonction dans un workflow.
 
 ## Types d'actions
 
@@ -250,26 +248,50 @@ Avant d'utiliser une action du marketplace, vérifiez :
 3. **La date du dernier commit** : une action non maintenue peut devenir un risque.
 4. **Le code source** : lisez le `action.yml` et le code — une action qui exécute `curl | bash` vers un serveur inconnu est un red flag.
 
-> **Exercice** : Dans le workflow `ci.yml` de `mon-app`, ajoutez une step qui utilise `actions/setup-python@v5` avec l'option `cache: "pip"`. Comparez le temps d'exécution entre le premier run (cache manquant) et le deuxième run (cache présent).
+> **Exercice** : Faites évoluer le workflow `ci.yml` de `mon-app` construit au chapitre précédent. Remplacez les deux jobs `info` et `check` par un job unique `build` qui :
+>
+> 1. Clone le code du dépôt avec `actions/checkout@v4`.
+> 2. Active Docker Buildx avec `docker/setup-buildx-action@v3`.
+> 3. Construit l'image Docker sans la pousser, en activant le cache GitHub Actions.
 
 <details>
 <summary>Solution</summary>
 
 ```yaml
-- name: Installer Python 3.12
-  uses: actions/setup-python@v5
-  with:
-    python-version: "3.12"
-    cache: "pip"
-    cache-dependency-path: |
-      requirements.txt
-      requirements-dev.txt
+# .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: "Build Docker"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloner le code
+        uses: actions/checkout@v4
+
+      - name: Configurer Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Vérifier que l'image se build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 ```
 
-Lors du premier run, vous verrez dans les logs : `Cache not found for input keys`. Le `pip install` prend son temps normal.
+Comparez avec le workflow du chapitre précédent :
 
-Lors du deuxième run (sans modification des requirements), vous verrez : `Cache restored successfully`. L'installation des packages est quasi instantanée car les fichiers sont déjà présents dans `~/.cache/pip`.
-
-L'économie de temps est typiquement de 30 à 60 secondes selon le nombre de dépendances — ce qui se traduit en dizaines de minutes économisées par mois si le workflow tourne fréquemment.
+- Sans `actions/checkout@v4`, le runner démarre avec un répertoire de travail **vide** — le `Dockerfile` n'est pas accessible.
+- `docker/setup-buildx-action@v3` active BuildKit, qui apporte le cache de couches et le support multi-arch. Sans cette action, il faudrait configurer BuildKit à la main.
+- `push: false` construit l'image localement sans la publier — suffisant pour valider que le `Dockerfile` est correct à chaque push.
+- `cache-from/cache-to: type=gha` met en cache les couches Docker entre les runs. Le premier run construit tout depuis zéro ; les runs suivants réutilisent les couches inchangées — gain typique de 30 à 60 secondes sur un projet réel.
 
 </details>
