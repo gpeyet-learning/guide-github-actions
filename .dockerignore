@@ -1,0 +1,21 @@
+# Contrôle de version
+.git
+.github
+.gitignore
+
+# Fichiers générés par Hugo (reconstruits dans le stage builder)
+public/
+resources/
+.hugo_build.lock
+
+# Configuration développement local uniquement
+# (baseURL localhost + module.yaml de remplacement local)
+config/development/
+
+# Artefacts éditeur / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
