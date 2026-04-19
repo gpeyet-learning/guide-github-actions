@@ -176,6 +176,6 @@ jobs:
           # No Go source files in this repo (go.mod is for Hugo Modules)
           VALIDATE_GO_MODULES: false
           # Prettier is the single formatter — Biome would conflict
-          VALIDATE_BIOME: false
+          VALIDATE_BIOME_FORMAT: false
           # Content is in French — English terminology rules produce false positives
           VALIDATE_NATURAL_LANGUAGE: false
