@@ -5,5 +5,7 @@ rules:
         actions/*: ref-pin
         docker/*: ref-pin
         super-linter/*: ref-pin
-  dependabot-cooldown:
-    ignore: true
+
+ignore:
+  - path: ".github/dependabot.yaml"
+    rules: ["dependabot-cooldown"]
