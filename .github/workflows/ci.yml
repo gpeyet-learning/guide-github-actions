@@ -175,3 +175,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # No Go source files in this repo (go.mod is for Hugo Modules)
           VALIDATE_GO_MODULES: false
+          # Prettier is the single formatter — Biome would conflict
+          VALIDATE_BIOME: false
