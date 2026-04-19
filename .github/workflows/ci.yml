@@ -26,6 +26,7 @@ jobs:
       issues: write
       pull-requests: write
       statuses: write
+      security-events: write
     with:
       hugo-version: "0.160.0"
       dart-sass-version: "1.99.0"

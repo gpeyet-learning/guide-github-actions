@@ -1,0 +1,17 @@
+name: "CodeQL Schedule"
+
+on:
+  schedule:
+    - cron: "0 3 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  codeql:
+    uses: gpeyet-learning/.github/.github/workflows/guide-codeql.yml@main
+    permissions:
+      contents: read
+      security-events: write
