@@ -3,3 +3,5 @@ rules:
     config:
       policies:
         actions/*: ref-pin
+        docker/*: ref-pin
+        super-linter/*: ref-pin
