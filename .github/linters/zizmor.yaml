@@ -5,3 +5,5 @@ rules:
         actions/*: ref-pin
         docker/*: ref-pin
         super-linter/*: ref-pin
+  dependabot-cooldown:
+    ignore: true
