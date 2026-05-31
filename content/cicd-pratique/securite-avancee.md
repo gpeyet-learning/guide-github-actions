@@ -265,7 +265,7 @@ La **push protection** bloque les commits qui contiennent des secrets **avant** 
 
 Si un développeur tente de pousser un commit avec un secret, le push est rejeté avec un message explicatif et un lien pour signaler un faux positif.
 
-> **Exercice** : Activez CodeQL et Dependabot sur `mon-app`. Configurez Dependabot pour mettre à jour les dépendances pip et les GitHub Actions chaque semaine. Ajoutez un scan Trivy dans le workflow Docker qui échoue en cas de CVE critique. Vérifiez dans l'onglet Security que les alertes CodeQL apparaissent.
+> **Mise en pratique** : Activez CodeQL et Dependabot sur `mon-app`. Configurez Dependabot pour mettre à jour les dépendances pip et les GitHub Actions chaque semaine. Ajoutez un scan Trivy dans le workflow Docker qui échoue en cas de CVE critique. Vérifiez dans l'onglet Security que les alertes CodeQL apparaissent.
 
 <details>
 <summary>Solution</summary>

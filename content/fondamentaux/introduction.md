@@ -107,7 +107,7 @@ La seule phase où le langage compte réellement est le lint et les tests unitai
 
 > **Note** : remplacez `mon-app` par le nom de votre propre projet — les workflows Docker présentés dans ce guide s'appliquent sans modification.
 >
-> **Exercice** : Créez un dépôt public `mon-app` sur votre compte GitHub. Initialisez-le avec un `README.md`. Naviguez ensuite dans l'onglet **Actions** de ce dépôt et observez l'interface vide qui vous accueille.
+> **Mise en pratique** : Créez un dépôt public `mon-app` sur votre compte GitHub. Initialisez-le avec un `README.md`. Naviguez ensuite dans l'onglet **Actions** de ce dépôt et observez l'interface vide qui vous accueille.
 
 <details>
 <summary>Solution</summary>

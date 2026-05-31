@@ -257,7 +257,7 @@ jobs:
       - run: echo "Déploiement du package depuis dist/"
 ```
 
-> **Exercice** : Modifiez le workflow `ci.yml` de `mon-app` pour qu'il :
+> **Mise en pratique** : Modifiez le workflow `ci.yml` de `mon-app` pour qu'il :
 >
 > 1. Génère un rapport de coverage HTML avec `pytest --cov=app --cov-report=html`.
 > 2. Upload ce rapport comme artifact nommé `coverage-report`, même si les tests échouent.

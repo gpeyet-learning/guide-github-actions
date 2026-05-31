@@ -257,7 +257,7 @@ jobs:
 
 > **Règle d'or** : ne combinez jamais `pull_request_target` + checkout du code du fork + accès aux secrets sans validation humaine explicite.
 >
-> **Exercice** : Auditez le workflow `ci.yml` de `mon-app`. Ajoutez les déclarations de permissions explicites (minimales) nécessaires et corrigez toute utilisation de variables utilisateur directement dans les commandes `run:`.
+> **Mise en pratique** : Auditez le workflow `ci.yml` de `mon-app`. Ajoutez les déclarations de permissions explicites (minimales) nécessaires et corrigez toute utilisation de variables utilisateur directement dans les commandes `run:`.
 
 <details>
 <summary>Solution</summary>

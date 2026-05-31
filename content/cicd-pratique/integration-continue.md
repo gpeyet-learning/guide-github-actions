@@ -415,7 +415,7 @@ Avec cette configuration, il est impossible de merger une PR si la CI a échoué
     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 ```
 
-> **Exercice** : Finalisez le workflow CI complet de `mon-app` avec les jobs lint et test adaptés à votre stack. Créez une branch protection rule sur `main` qui exige le passage des deux jobs. Créez une PR depuis une branche `feature/add-endpoint` et vérifiez que le badge de statut apparaît dans la PR avant le merge.
+> **Mise en pratique** : Finalisez le workflow CI complet de `mon-app` avec les jobs lint et test adaptés à votre stack. Créez une branch protection rule sur `main` qui exige le passage des deux jobs. Créez une PR depuis une branche `feature/add-endpoint` et vérifiez que le badge de statut apparaît dans la PR avant le merge.
 
 <details>
 <summary>Solution (exemple Python)</summary>

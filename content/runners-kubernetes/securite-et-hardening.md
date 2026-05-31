@@ -364,7 +364,7 @@ groups:
           summary: "Les runners sont à capacité maximale depuis plus de 10 minutes"
 ```
 
-> **Exercice** : Appliquez les NetworkPolicies et les ResourceQuotas au namespace `arc-runners`. Ajoutez un ServiceAccount dédié avec les droits RBAC minimaux pour déployer dans le namespace `apps`. Vérifiez que les runners peuvent toujours communiquer avec GitHub mais ne peuvent pas contacter les pods dans d'autres namespaces.
+> **Mise en pratique** : Appliquez les NetworkPolicies et les ResourceQuotas au namespace `arc-runners`. Ajoutez un ServiceAccount dédié avec les droits RBAC minimaux pour déployer dans le namespace `apps`. Vérifiez que les runners peuvent toujours communiquer avec GitHub mais ne peuvent pas contacter les pods dans d'autres namespaces.
 
 <details>
 <summary>Solution</summary>

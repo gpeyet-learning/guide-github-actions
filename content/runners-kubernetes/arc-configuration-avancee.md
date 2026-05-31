@@ -329,7 +329,7 @@ helm upgrade arc-runner-set \
   oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
 ```
 
-> **Exercice** : Créez un second RunnerScaleSet nommé `k8s-runners-docker` avec la configuration DinD. Modifiez le workflow `docker.yml` de `mon-app` pour l'utiliser à la place de `ubuntu-latest` pour le build Docker.
+> **Mise en pratique** : Créez un second RunnerScaleSet nommé `k8s-runners-docker` avec la configuration DinD. Modifiez le workflow `docker.yml` de `mon-app` pour l'utiliser à la place de `ubuntu-latest` pour le build Docker.
 
 <details>
 <summary>Solution</summary>
