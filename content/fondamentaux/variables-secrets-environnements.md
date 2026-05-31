@@ -250,7 +250,7 @@ Priorité : **Environnement > Dépôt > Organisation**
 - **Jamais dans le code** : vérifiez votre historique Git avant d'ajouter un secret — un secret committé dans Git doit être considéré comme compromis, même si supprimé ensuite.
 - **Variables vs secrets** : utilisez `vars` pour les valeurs non sensibles (noms d'hôtes, régions) et `secrets` pour les valeurs confidentielles (tokens, mots de passe).
 
-> **Exercice** : Dans le dépôt `mon-app`, créez un secret `API_KEY` avec la valeur `my-super-secret-key`. Ajoutez un environnement `staging`. Dans le workflow `ci.yml`, ajoutez un job `check-secrets` qui référence l'environnement `staging` et affiche un message en utilisant la variable d'environnement `API_KEY` (sans afficher sa valeur).
+> **Mise en pratique** : Dans le dépôt `mon-app`, créez un secret `API_KEY` avec la valeur `my-super-secret-key`. Ajoutez un environnement `staging`. Dans le workflow `ci.yml`, ajoutez un job `check-secrets` qui référence l'environnement `staging` et affiche un message en utilisant la variable d'environnement `API_KEY` (sans afficher sa valeur).
 
 <details>
 <summary>Solution</summary>

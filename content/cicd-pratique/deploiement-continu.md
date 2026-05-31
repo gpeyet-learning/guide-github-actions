@@ -330,7 +330,7 @@ create-release:
         make_latest: true
 ```
 
-> **Exercice** : Ajoutez le Dockerfile à `mon-app` et créez le workflow `docker.yml`. Poussez sur `main` et vérifiez que l'image apparaît dans l'onglet **Packages** du dépôt sur GitHub. Créez ensuite un tag `v0.1.0` et vérifiez qu'une release est créée avec l'image taguée `0.1.0`.
+> **Mise en pratique** : Ajoutez le Dockerfile à `mon-app` et créez le workflow `docker.yml`. Poussez sur `main` et vérifiez que l'image apparaît dans l'onglet **Packages** du dépôt sur GitHub. Créez ensuite un tag `v0.1.0` et vérifiez qu'une release est créée avec l'image taguée `0.1.0`.
 
 <details>
 <summary>Solution</summary>

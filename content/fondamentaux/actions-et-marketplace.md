@@ -248,7 +248,7 @@ Avant d'utiliser une action du marketplace, vérifiez :
 3. **La date du dernier commit** : une action non maintenue peut devenir un risque.
 4. **Le code source** : lisez le `action.yml` et le code — une action qui exécute `curl | bash` vers un serveur inconnu est un red flag.
 
-> **Exercice** : Faites évoluer le workflow `ci.yml` de `mon-app` construit au chapitre précédent. Remplacez les deux jobs `info` et `check` par un job unique `build` qui :
+> **Mise en pratique** : Faites évoluer le workflow `ci.yml` de `mon-app` construit au chapitre précédent. Remplacez les deux jobs `info` et `check` par un job unique `build` qui :
 >
 > 1. Clone le code du dépôt avec `actions/checkout@v6`.
 > 2. Active Docker Buildx avec `docker/setup-buildx-action@v3`.

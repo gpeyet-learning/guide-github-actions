@@ -242,7 +242,7 @@ Mettons en pratique. Ce premier workflow ne fait pas encore de CI à proprement 
 
 Les runners GitHub viennent avec un environnement riche pré-installé. On peut s'en servir dès ce premier workflow pour afficher des informations utiles et valider l'environnement de build.
 
-> **Exercice** : Créez le fichier `.github/workflows/ci.yml` dans le dépôt `mon-app`. Ce workflow doit :
+> **Mise en pratique** : Créez le fichier `.github/workflows/ci.yml` dans le dépôt `mon-app`. Ce workflow doit :
 >
 > 1. Se déclencher sur tout push vers `main` et sur toute pull request vers `main`.
 > 2. Déclarer une variable d'environnement globale `IMAGE_NAME` à `"mon-app"`.

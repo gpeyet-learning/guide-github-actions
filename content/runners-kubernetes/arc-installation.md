@@ -223,7 +223,7 @@ kubectl get pods -n arc-runners --watch
 
 Le pod se crée au démarrage du job et se supprime à la fin — c'est le comportement éphémère.
 
-> **Exercice** : Installez ARC sur votre cluster Kubernetes. Créez un RunnerScaleSet nommé `k8s-runners` enregistré sur votre organisation GitHub. Vérifiez que le runner apparaît en "Idle" dans l'interface GitHub. Déclenchez manuellement le workflow de test et observez le pod se créer puis disparaître.
+> **Mise en pratique** : Installez ARC sur votre cluster Kubernetes. Créez un RunnerScaleSet nommé `k8s-runners` enregistré sur votre organisation GitHub. Vérifiez que le runner apparaît en "Idle" dans l'interface GitHub. Déclenchez manuellement le workflow de test et observez le pod se créer puis disparaître.
 
 <details>
 <summary>Solution</summary>
